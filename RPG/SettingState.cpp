@@ -18,6 +18,7 @@ SettingState::SettingState(StateData* state_data) : State{state_data} {
 	initKeybinds();
 	initFonts();
 	initGUI();
+	int test;
 }
 
 
