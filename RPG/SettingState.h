@@ -25,7 +25,6 @@ private:
 	void initKeybinds();
 	void initFonts();
 	void initGUI();
-	void initText();
 public:
     SettingState(StateData* state_data);
     virtual ~SettingState();

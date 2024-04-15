@@ -18,7 +18,6 @@ SettingState::SettingState(StateData* state_data) : State{state_data} {
 	initKeybinds();
 	initFonts();
 	initGUI();
-	initText();
 }
 
 
@@ -75,14 +74,6 @@ void SettingState::initGUI()
 	dropdownL["RESOLUTION"] = new GUI::DropDownList(p2pX(0.156, vm), p2pY(0.556, vm), p2pX(0.104, vm), p2pY(0.046, vm), font, modes_str, 0);
 }
 
-void SettingState::initText()
-{
-	optionsText.setFont(font);
-	optionsText.setPosition(100, 500);
-	optionsText.setCharacterSize(28);
-	optionsText.setFillColor( sf::Color::White );
-	optionsText.setString("Resolution \nVsync \nAntialiasing \n");
-}
 
 
 void SettingState::update(const float& dt)
@@ -146,6 +137,13 @@ void SettingState::updateGUI(const float& dt)
 	for (auto& it : dropdownL) {
 		it.second->update(mousePosWindow, dt);
 	}
+
+	//Text init
+	optionsText.setFont(font);
+	optionsText.setPosition(100, 500);
+	optionsText.setCharacterSize(28);
+	optionsText.setFillColor(sf::Color::White);
+	optionsText.setString("Resolution \nVsync \nAntialiasing \n");
 }
 
 void SettingState::renderGUI(sf::RenderTarget* target)
