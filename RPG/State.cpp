@@ -9,7 +9,7 @@ State::State(StateData* state_Data) {
 	quit = false;
 	paused = false;
 	keyTime = 0.f;
-	keyTimeMax = 3.f;
+	keyTimeMax = 1.f;
 	gridSize = state_Data->gridsize;
 }
 
@@ -34,12 +34,17 @@ void State::unpauseState()
 
 
 
-void State::updateMousePositions()
+void State::updateMousePositions(sf::View* view = nullptr)
 {
+	
 	mousePosScreen = sf::Mouse::getPosition();
 	mousePosWindow = sf::Mouse::getPosition(*window);
+	if (view) {
+		window->setView(*view);
+	}
 	mousePosView = window->mapPixelToCoords(sf::Mouse::getPosition(*window));
-	mousePosGrid = sf::Vector2u{ static_cast<unsigned>(mousePosView.x) / static_cast<unsigned>(gridSize) ,static_cast<unsigned>(mousePosView.y) / static_cast<unsigned>(gridSize)};
+	mousePosGrid = sf::Vector2i{ static_cast<int>(mousePosView.x) / static_cast<int>(gridSize) ,static_cast<int>(mousePosView.y) / static_cast<int>(gridSize) };
+	window->setView(window->getDefaultView());
 }
 
 void State::updateKeyTime(const float dt)
@@ -48,6 +53,7 @@ void State::updateKeyTime(const float dt)
 		keyTime += 10.f * dt;
 	}
 }
+
 
 const bool& State::getQuit() const
 {
@@ -59,12 +65,14 @@ const bool State::getKeyTime()
 	if (keyTime >= keyTimeMax) {
 		std::cout << keyTime << " "<<keyTimeMax<<" " << std::endl;
 		keyTime = 0.f;
-		std::cout << "true" << std::endl;
+		
 		return true;
 		
 	}
-	std::cout << "not true" << std::endl;
+	
 	return false;
 }
 
-
+StateData::StateData() : window{}, supportedKeys{}, states{}, gridsize{}, gfxSettings{}
+{
+}

@@ -10,15 +10,50 @@ HitboxComponent::HitboxComponent(sf::Sprite& sprt, float offset_x, float offset_
 	hitbox.setFillColor(sf::Color::Transparent);
 
 	hitbox.setOutlineColor(sf::Color::Green);
-
-	hitbox.setOutlineThickness(3.f);
+	//note to future self, always use negative outline thicknesses since it messes with collision detection
+	hitbox.setOutlineThickness(-1.f);
+	nextPosition.left = 0.f;
+	nextPosition.top = 0.f;
+	nextPosition.width = width;
+	nextPosition.height = height;
 
 }
 HitboxComponent::~HitboxComponent()
 {
 }
 
-bool HitboxComponent::checkIntersect(const sf::FloatRect& rect)
+const sf::Vector2f HitboxComponent::getPosition() const
+{
+	return hitbox.getPosition();
+}
+
+const sf::FloatRect HitboxComponent::getGlobalBounds() const
+{
+	return hitbox.getGlobalBounds();
+}
+
+const sf::FloatRect& HitboxComponent::getNextPosition(const sf::Vector2f& velocity)
+{
+	//velocity already multiplied by delta time
+	nextPosition.left = hitbox.getPosition().x + velocity.x;
+	nextPosition.top = hitbox.getPosition().y + velocity.y;
+	return nextPosition;
+}
+//the hitbox setposition sets the position of the rectangle used for collision and the sprite's position relative to this rectangle
+void HitboxComponent::setPosition(const sf::Vector2f position)
+{
+	hitbox.setPosition(position);
+	//set the sprites position to the same position as the hitbox offset by a preset amount (so the hitbox only surrounds the part of the sprite we want)
+	sprite.setPosition(position.x - offsetX, position.y - offsetY);
+}
+
+void HitboxComponent::setPosition(const float x, const float y)
+{
+	hitbox.setPosition(x,y);
+	sprite.setPosition(x - offsetX, y - offsetY);
+}
+
+bool HitboxComponent::intersects(const sf::FloatRect& rect)
 {
 	return hitbox.getGlobalBounds().intersects(rect);
 }

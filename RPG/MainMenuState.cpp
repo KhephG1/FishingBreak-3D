@@ -23,7 +23,7 @@ void MainMenuState::initKeybinds()
 		std::string operation{};
 		std::string key{};
 		while (stream >> operation >> key) {
-			std::cout << operation << " " << key << std::endl;
+			
 			keybinds[operation] = supportedKeys->at(key);
 		}
 	}
@@ -61,10 +61,11 @@ void MainMenuState::initButtons()
 
 	since you actually can't see active, it is left as blue
 	*/
-	buttons["EXIT_STATE"] = new Button{ 100, 300, 150, 50,"Quit", &font, sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent, sf::Color::White, sf::Color{100,100,100}, sf::Color::Blue, sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent };
-	buttons["GAME_STATE"] = new Button{ 350,300, 150, 50,"New Game", &font,  sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent, sf::Color::White, sf::Color{100,100,100}, sf::Color::Blue, sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent };
-	buttons["EDITOR_STATE"] = new Button{ 750,300, 150, 50,"Editor", &font,   sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent, sf::Color::White, sf::Color{100,100,100}, sf::Color::Blue, sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent };
-	buttons["SETTING_STATE"] = new Button{ 550,300, 150, 50,"Setting", &font,   sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent, sf::Color::White, sf::Color{100,100,100}, sf::Color::Blue, sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent };
+	const sf::VideoMode& vm = State_Data->gfxSettings->resolution;
+	buttons["EXIT_STATE"] = new Button{ p2pX(0.072,vm), p2pY(0.278,vm), p2pX(0.0781,vm), p2pY(0.0416,vm),"Quit", &font, sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent, sf::Color::White, sf::Color{100,100,100}, sf::Color::Blue, sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent };
+	buttons["GAME_STATE"] = new Button{ p2pX(0.187,vm),p2pY(0.278,vm),  p2pX(0.0781,vm), p2pY(0.0416,vm),"New Game", &font,  sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent, sf::Color::White, sf::Color{100,100,100}, sf::Color::Blue, sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent };
+	buttons["EDITOR_STATE"] = new Button{ p2pX(0.39,vm),p2pY(0.278,vm),  p2pX(0.0781,vm), p2pY(0.0416,vm),"Editor", &font,   sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent, sf::Color::White, sf::Color{100,100,100}, sf::Color::Blue, sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent };
+	buttons["SETTING_STATE"] = new Button{ p2pX(0.286,vm),p2pY(0.278,vm),  p2pX(0.0781,vm), p2pY(0.0416,vm),"Setting", &font,   sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent, sf::Color::White, sf::Color{100,100,100}, sf::Color::Blue, sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent };
 }
 
 MainMenuState::MainMenuState(StateData* state_data) : State(state_data){
@@ -85,10 +86,11 @@ MainMenuState::~MainMenuState()
 
 void MainMenuState::update(const float& dt)
 {
-	updateMousePositions();
+	
+	updateMousePositions(nullptr);
 	updateInput(dt);
 	updateButtons();
-	std::cout << mousePosView.x << " " << mousePosView.y << std::endl;
+	
 }
 
 void MainMenuState::render(sf::RenderTarget* target)
@@ -112,13 +114,12 @@ void MainMenuState::render(sf::RenderTarget* target)
 void MainMenuState::updateInput(const float& dt)
 {
 	//update player input
-
 }
 
 void MainMenuState::updateButtons()
 {
 	for (auto but : buttons) {
-		but.second->update(mousePosView);
+		but.second->update(mousePosWindow);
 	}
 	//New Game
 	if (buttons["GAME_STATE"]->isPressed()) {

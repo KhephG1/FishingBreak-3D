@@ -58,7 +58,7 @@ void MovementComponent::move(const float dirX, const float dirY, const float dt)
 {
 	//acceleration for a sprite until it reaches max velocity
 
-	velocity.x += acceleration * dirX;
+	velocity.x += acceleration * dirX * dt;
 	if (velocity.x > 0.f) {
 		if (velocity.x > maxVel) {
 			velocity.x = maxVel;
@@ -70,7 +70,7 @@ void MovementComponent::move(const float dirX, const float dirY, const float dt)
 		}
 	}
 
-	velocity.y += acceleration * dirY;
+	velocity.y += acceleration * dirY * dt;
 }
 
 
@@ -82,7 +82,7 @@ void MovementComponent::update(const float dt)
 		if (velocity.x > maxVel) {
 			velocity.x = maxVel;
 		}
-		velocity.x -= deceleration;
+		velocity.x -= deceleration * dt;
 		if (velocity.x < 0.f) {
 			velocity.x = 0.f;
 		}
@@ -92,7 +92,7 @@ void MovementComponent::update(const float dt)
 		if (velocity.x < -maxVel) {
 			velocity.x = -maxVel;
 		}
-		velocity.x += deceleration;
+		velocity.x += deceleration * dt;
 		if (velocity.x >0.f) {
 			velocity.x = 0.f;
 		}
@@ -103,7 +103,7 @@ void MovementComponent::update(const float dt)
 		if (velocity.y > maxVel) {
 			velocity.y = maxVel;
 		}
-		velocity.y -= deceleration;
+		velocity.y -= deceleration* dt;
 		if (velocity.y < 0.f) {
 			velocity.y = 0.f;
 		}
@@ -113,11 +113,30 @@ void MovementComponent::update(const float dt)
 		if (velocity.y < -maxVel) {
 			velocity.y = -maxVel;
 		}
-		velocity.y += deceleration;
+		velocity.y += deceleration * dt;
 		if (velocity.y > 0.f) {
 			velocity.y = 0.f;
 		}
 	}
 	//final move
 	sprite.move(velocity * dt);
+}
+
+void MovementComponent::stopVelocity()
+{
+	/*
+	resets the velocity to zero
+	*/
+	velocity.x = 0.f;
+	velocity.y = 0.f;
+}
+
+void MovementComponent::stopVelocityX()
+{
+	velocity.x = 0.f;
+}
+
+void MovementComponent::stopVelocityY()
+{
+	velocity.y = 0.f;
 }

@@ -5,7 +5,7 @@ class Game
 {
 private:
 	//Variables
-	float gridSize = 100.f;
+	float gridSize = 64.f;
 	sf::RenderWindow* window{};
 	sf::Event event{};
 	float dt{};

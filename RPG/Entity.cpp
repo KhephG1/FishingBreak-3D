@@ -20,6 +20,7 @@ Entity::~Entity()
 	delete movementComp;
 	delete animationComponent;
 	delete hitbox;
+	delete attributeComponent;
 }
 
 void Entity::createMovementComponent(const float maxSpeed, const float accel, const float decel)
@@ -37,6 +38,11 @@ void Entity::createHitboxComponent(sf::Sprite& sprt, float offset_x, float offse
 	hitbox = new HitboxComponent(sprt, offset_x, offset_y, width, height);
 }
 
+void Entity::createAttributeComponent(const int lvl)
+{
+	attributeComponent = new AttributeComponent{lvl};
+}
+
 void Entity::createSprite(sf::Texture* tex)
 {
 	texture = tex;
@@ -44,9 +50,46 @@ void Entity::createSprite(sf::Texture* tex)
 
 }
 
+const sf::Vector2f Entity::getPosition() const
+{
+	if (hitbox)
+		return hitbox->getPosition();
+	
+	return sprite->getPosition();
+	
+}
+
+const sf::FloatRect Entity::getGlobalBounds() const
+{
+	if (hitbox) {
+		return hitbox->getGlobalBounds();
+	}
+	return sprite->getGlobalBounds();
+}
+
+const sf::Vector2i Entity::getGridPosition(const int GridSizeI) const
+{
+	if (hitbox)
+		return sf::Vector2i{ static_cast<int>(hitbox->getPosition().x) / GridSizeI, static_cast<int>(hitbox->getPosition().y) / GridSizeI };
+
+	return sf::Vector2i{ static_cast<int>(sprite->getPosition().x) / GridSizeI, static_cast<int>(sprite->getPosition().y) / GridSizeI };
+}
+
+const sf::FloatRect& Entity::getNextBounds(const float& dt) const
+{
+	if (hitbox && movementComp) {
+		return hitbox->getNextPosition(movementComp->getVelocity() * dt);
+	}
+	throw std::runtime_error{ "ENTITY::GETNEXTBOUNDS ERROR" };
+}
+
+//the entity set position function handles setting the hitbox position (if it has one) and the sprite position only otherwise
+//the hotbox set position handles setting the sprite position relative to the hitbox position
 void Entity::setPosition(const float x, const float y)
 {
-	if (sprite) {
+	if (hitbox) {
+		hitbox->setPosition(x, y);
+	}else if (sprite) {
 		sprite->setPosition(x, y);
 	}
 }
@@ -64,20 +107,27 @@ void Entity::move(const float& dt,const float dir_x, const float dir_y)
 
 void Entity::update(const float& dt)
 {
-	if (movementComp) {
-		movementComp->update(dt);
-	}
+	
 }
 
 void Entity::render(sf::RenderTarget* target)
 {
-	if (sprite) {
-		target->draw(*sprite);
-	}
 
-	if (hitbox) {
-		hitbox->render(*target);
-	}
+}
+
+void Entity::stopVelocity()
+{
+	movementComp->stopVelocity();
+}
+
+void Entity::stopVelocityX()
+{
+	movementComp->stopVelocityX();
+}
+
+void Entity::stopVelocityY()
+{
+	movementComp->stopVelocityY();
 }
 
 

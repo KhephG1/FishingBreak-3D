@@ -1,6 +1,20 @@
 #include "stdafx.h"
 #include "GUI.h"
 using namespace GUI;
+
+const float GUI::p2pX(const float percent, const sf::VideoMode& vm)
+{
+	return (float)vm.width * percent;
+
+}
+
+const float GUI::p2pY(const float percent, const sf::VideoMode& vm)
+{
+	return (float)vm.height * percent;
+}
+
+
+
 Button::Button(float x, float y, float width, float height, std::string text, sf::Font* font,
 	sf::Color Outline_idle, sf::Color Outline_hover, sf::Color Outline_active,
 	sf::Color text_idle, sf::Color text_hover, sf::Color text_active,
@@ -15,11 +29,11 @@ Button::Button(float x, float y, float width, float height, std::string text, sf
 	this->text.setFont(*font);
 	this->text.setString(text);
 	this->text.setFillColor(text_idle);
-	this->text.setCharacterSize(character_size);
+	this->text.setCharacterSize(calccharsize());
 	this->text_idle = text_idle;
 	this->text_hover = text_hover;
 	this->text_active = text_active;
-	this->text.setPosition(shape.getPosition().x + ((shape.getGlobalBounds().width - this->text.getGlobalBounds().width) /2.0f), shape.getPosition().y + ((shape.getGlobalBounds().height - this->text.getGlobalBounds().height) / 2.0f));
+	this->text.setPosition(shape.getPosition().x + ((shape.getGlobalBounds().width - this->text.getGlobalBounds().width) /2.0f), shape.getPosition().y);
 	this->idlecolour = idleColor;
 	this->hovercolour = hoverColor;
 	this->activecolour = activeColor;
@@ -59,11 +73,11 @@ void GUI::Button::setID(const short unsigned eyedee)
 	id = eyedee;
 }
 
-void Button::update(sf::Vector2f& mousePos)
+void Button::update(sf::Vector2i& mousePos)
 {
 	/*update the booleans for hover and pressed*/
 	buttonState = BTN_IDLE;
-	if (shape.getGlobalBounds().contains(mousePos)) {
+	if (shape.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePos))) {
 		buttonState = BTN_HOVER;
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 			buttonState = BTN_PRESSED;
@@ -101,6 +115,11 @@ void Button::render(sf::RenderTarget* target)
 	target->draw(text);
 }
 
+const unsigned GUI::Button::calccharsize() const
+{
+	return (shape.getGlobalBounds().getSize().x + shape.getGlobalBounds().getSize().y )/5;
+}
+
 DropDownList::DropDownList(float x, float y, float width, float height, sf::Font& fnt, std::vector<std::string> a_list, unsigned default_idx) : font{ fnt }, show_list{ false }, keyTimeMax{ 3.f },keyTime { keyTimeMax }
 {
 	unsigned counter{};
@@ -133,7 +152,6 @@ const bool GUI::DropDownList::getkeyTime()
 
 void GUI::DropDownList::updateKeyTime(const float& dt)
 {
-
 	if (keyTime < keyTimeMax) {
 		keyTime += 10.f * dt;
 	}
@@ -144,7 +162,7 @@ const unsigned short GUI::DropDownList::getlistID()
 	return activeElement->getID();
 }
 
-void GUI::DropDownList::update(sf::Vector2f& mousePos, const float& dt)
+void GUI::DropDownList::update(sf::Vector2i& mousePos, const float& dt)
 {
 	updateKeyTime(dt);
 	if (show_list) {
@@ -176,9 +194,24 @@ void GUI::DropDownList::render(sf::RenderTarget* target)
 
 
 //TEXTURE SELECTOR_______________________-
+void GUI::textureSelector::updateKeytime(const float& dt)
+ {
+  	if (keytime < keytimeMax) {
+		keytime += 10.f * dt;
+	}
 
-GUI::textureSelector::textureSelector(float x, float y, float width, float height, float gridSize, const sf::Texture* texSheet)
+}
+const bool GUI::textureSelector::getKeytime()
 {
+	if (keytime >= keytimeMax) {
+		keytime = 0.f;
+		return true;
+	}
+	return false;
+}
+GUI::textureSelector::textureSelector(float x, float y, float width, float height, float gridSize, const sf::Texture* texSheet, sf::Font& font)
+{
+	keytimeMax = 2.5f;
 	GridSize = gridSize;
 	bounds.setSize(sf::Vector2f{ width, height });
 	bounds.setFillColor(sf::Color{ 50,50,50,100 });
@@ -194,15 +227,19 @@ GUI::textureSelector::textureSelector(float x, float y, float width, float heigh
 		sheet.setTextureRect(sf::IntRect{ 0,0,(int)sheet.getGlobalBounds().width, (int)bounds.getGlobalBounds().height });
 	}
 	selector.setPosition(x, y);
-	selector.setSize(sf::Vector2f{ gridSize,gridSize });
+	selector.setSize(sf::Vector2f{ gridSize,gridSize});
 	selector.setFillColor(sf::Color::Transparent);
 	selector.setOutlineColor(sf::Color::Red);
 	selector.setOutlineThickness(1.5f);
 	active = false;
+	hidden = false;
+	textureRect.width = gridSize;
+	textureRect.height = gridSize;
 }
 
 GUI::textureSelector::~textureSelector()
 {
+
 }
 
 const bool& GUI::textureSelector::getActive() const
@@ -210,24 +247,45 @@ const bool& GUI::textureSelector::getActive() const
 	return active;
 }
 
-void GUI::textureSelector::update(const sf::Vector2i& mousePosWindow)
+const sf::IntRect& GUI::textureSelector::getTextureRect() const
 {
-	if (bounds.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosWindow))) {
-		active = true;
+	return textureRect;
+}
+
+bool& GUI::textureSelector::gethidden()
+{
+	return hidden;
+}
+
+void GUI::textureSelector::update(const sf::Vector2i& mousePosWindow, const float& dt)
+{
+	if (!hidden) {
+
+		if (bounds.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosWindow))) {
+			active = true;
+		}
+		else {
+			active = false;
+		}
+		if (active) {
+			mousePosGrid.x = (mousePosWindow.x - static_cast<int>(bounds.getPosition().x)) / static_cast<unsigned>(GridSize);
+			mousePosGrid.y = (mousePosWindow.y - static_cast<int>(bounds.getPosition().y)) / static_cast<unsigned>(GridSize);
+			selector.setPosition(bounds.getPosition().x + mousePosGrid.x * GridSize, bounds.getPosition().y + mousePosGrid.y * GridSize);
+	
+		}
+		textureRect.left = static_cast<int>(selector.getPosition().x);
+		textureRect.top = static_cast<int>(selector.getPosition().y);
 	}
-	else {
-		active = false;
-	}
-	if (active) {
-		mousePosGrid.x = (mousePosWindow.x - static_cast<int>(bounds.getPosition().x)) / static_cast<unsigned>(GridSize);
-		mousePosGrid.y = (mousePosWindow.y - static_cast<int>(bounds.getPosition().y)) / static_cast<unsigned>(GridSize);
-	}
-	selector.setPosition(bounds.getPosition().x + mousePosGrid.x * GridSize, bounds.getPosition().y + mousePosGrid.y * GridSize);
+
 }
 
 void GUI::textureSelector::render(sf::RenderTarget& target)
 {
-	target.draw(bounds);
-	target.draw(sheet);
-	target.draw(selector);
+	if (!hidden) {
+		target.draw(bounds);
+		target.draw(sheet);
+		if (active)
+			target.draw(selector);
+	}
+
 }

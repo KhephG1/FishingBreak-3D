@@ -29,11 +29,18 @@ void Game::initStates()
 }
 void Game::initKeys()
 {
+	
 	supportedKeys["ESCAPE"] = sf::Keyboard::Key::Escape;
 	supportedKeys["A"] = sf::Keyboard::Key::A;
 	supportedKeys["D"] =  sf::Keyboard::Key::D;
 	supportedKeys["W"] = sf::Keyboard::Key::W;
 	supportedKeys["S"] = sf::Keyboard::Key::S;
+	supportedKeys["C"] = sf::Keyboard::Key::C;
+	supportedKeys["UP"] = sf::Keyboard::Key::Up;
+	supportedKeys["DOWN"] = sf::Keyboard::Key::Down;
+	
+
+
 }
 void Game::initGraphicSettings()
 {
@@ -69,12 +76,15 @@ void Game::updateSFMLEvents()
 void Game::update()
 {
 	updateSFMLEvents();
+	//the has focus function returns true if the current instance of the window is the one taking input such as keystrokes and mouse movements and false otherwise
 	if (!states.empty()) {
 		states.top()->update(dt);
-		if (states.top()->getQuit()) {
-			states.top()->endState();
-			delete states.top();
-			states.pop();
+		if (window->hasFocus()) {
+			if (states.top()->getQuit()) {
+				states.top()->endState();
+				delete states.top();
+				states.pop();
+			}
 		}
 	}
 	//Application end

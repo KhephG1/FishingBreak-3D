@@ -9,6 +9,7 @@ class Editor_State: public State
 {
 private:
 	sf::RectangleShape background;
+	sf::RectangleShape sidebar;
 	sf::Font font;
 	sf::Texture backgroundTexture;
 	std::map<std::string, Button*> buttons;
@@ -18,7 +19,13 @@ private:
 	sf::IntRect textureRect;
 	sf::RectangleShape selectorRect;
 	GUI::textureSelector* texSelector;
-	Button* gamestate_btn;
+	bool collision;
+	short type;
+	sf::View MainView;
+	float camera_speed;
+	//current layer we are working on in the editor
+	int layer;
+	
 
 	//functions
 	void initPauseMenu();
@@ -29,8 +36,9 @@ private:
 	void initText();
 	void initButtons();
 	void initTileMap();
-	void updateEditorInput();
+	void updateEditorInput(const float& dt);
 	void initGUI();
+	void initView();
 public:
 
 	Editor_State(StateData* State_Data);
@@ -40,7 +48,7 @@ public:
 	virtual void updateInput(const float& dt) override;
 	void updatePauseMenuButtons();
 	void updateButtons();
-	void updateGUI();
+	void updateGUI(const float& dt);
 	void renderButtons(sf::RenderTarget* Target);
 	void renderGUI(sf::RenderTarget& target);
 };

@@ -62,16 +62,17 @@ void SettingState::initFonts()
 
 void SettingState::initGUI()
 {
-	buttons["EXIT_STATE"] = new Button{ 100, 675, 150, 50,"Back", &font,  sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent, sf::Color::White, sf::Color{100,100,100}, sf::Color::Blue, sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent };
+	sf::VideoMode& vm = State_Data->gfxSettings->resolution;
+	buttons["EXIT_STATE"] = new Button{ p2pX(0.052,vm), p2pY(0.625,vm), p2pX(0.0781,vm), p2pY(0.0462,vm),"Back", &font,  sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent, sf::Color::White, sf::Color{100,100,100}, sf::Color::Blue, sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent};
 
-	buttons["APPLY"] = new Button{ 100, 600, 150, 50,"Apply", &font,  sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent, sf::Color::White, sf::Color{100,100,100}, sf::Color::Blue, sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent };
+	buttons["APPLY"] = new Button{ p2pX(0.052,vm), p2pY(0.556,vm), p2pX(0.0781,vm), p2pY(0.0462,vm),"Apply", &font,  sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent, sf::Color::White, sf::Color{100,100,100}, sf::Color::Blue, sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent};
 	std::vector<std::string> a_list{ "1920x1080", "800x600", "640x480"};
 	std::vector<std::string> modes_str;
 
 	for (auto& i : modes) {
 		modes_str.push_back(std::to_string(i.width) + 'x' + std::to_string(i.height));
 	}
-	dropdownL["RESOLUTION"] = new GUI::DropDownList(300, 600, 200, 50, font, modes_str,0);
+	dropdownL["RESOLUTION"] = new GUI::DropDownList(p2pX(0.156, vm), p2pY(0.556, vm), p2pX(0.104, vm), p2pY(0.046, vm), font, modes_str, 0);
 }
 
 void SettingState::initText()
@@ -86,7 +87,7 @@ void SettingState::initText()
 
 void SettingState::update(const float& dt)
 {
-	updateMousePositions();
+	updateMousePositions(nullptr);
 	updateInput(dt);
 	updateGUI(dt);
 }
@@ -122,7 +123,7 @@ void SettingState::updateInput(const float& dt)
 void SettingState::updateGUI(const float& dt)
 {
 	for (auto but : buttons) {
-		but.second->update(mousePosView);
+		but.second->update(mousePosWindow);
 	}
 	
 	//quit game
@@ -143,7 +144,7 @@ void SettingState::updateGUI(const float& dt)
 	//dropdownlists functionality
 
 	for (auto& it : dropdownL) {
-		it.second->update(mousePosView, dt);
+		it.second->update(mousePosWindow, dt);
 	}
 }
 

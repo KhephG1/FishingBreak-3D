@@ -16,10 +16,15 @@ public:
 
 	MovementComponent(sf::Sprite& sprt, float maxS, float acccel, float decel);
 	virtual ~MovementComponent();
+	//Accessors
 	const float& getMaxVelocity() const;
 	const sf::Vector2f& getVelocity() const;
 	const bool getState(const short unsigned state) const;
+	//functions
 	void move(const float dirX, const float dirY, const float dt);
 	void update(const float dt);
+	void stopVelocity();
+	void stopVelocityX();
+	void stopVelocityY();
 };
 #endif

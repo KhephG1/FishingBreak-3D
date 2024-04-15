@@ -2,14 +2,14 @@
 #include "PauseMenu.h"
 using namespace GUI;
 
-PauseMenu::PauseMenu(sf::RenderWindow& window, sf::Font& fnt): font {fnt} 
+PauseMenu::PauseMenu(sf::VideoMode& vm, sf::Font& fnt): font {fnt} 
 {
 	//init background
-	background.setSize((sf::Vector2f)window.getSize());
+	background.setSize(sf::Vector2f{ (float)vm.width, (float)vm.height });
 	background.setFillColor(sf::Color{ 20, 20, 20, 100 });
 	//init container
-	container.setSize(sf::Vector2f{ window.getSize().x/4.f, (float)window.getSize().y - 60.f });
-	container.setPosition(sf::Vector2f{ (window.getSize().x - container.getSize().x) / 2.f, 30.f });
+	container.setSize(sf::Vector2f{ vm.width/4.f, (float)vm.height - GUI::p2pY(0.093f,vm)});
+	container.setPosition(sf::Vector2f{ (vm.width - container.getSize().x) / 2.f, GUI::p2pY(0.0278f,vm)});
 	container.setFillColor(sf::Color{ 20,20,20,100 });
 	//init text
 	pmenuText.setFont(font);
@@ -31,7 +31,7 @@ std::map<std::string, Button*>& PauseMenu::getButtons()
 	return buttons;
 }
 
-void PauseMenu::update(sf::Vector2f& MousePosition)
+void PauseMenu::update(sf::Vector2i& MousePosition)
 {
 	for (auto but : buttons) {
 		but.second->update(MousePosition);
@@ -49,12 +49,11 @@ void PauseMenu::render(sf::RenderTarget& target)
 
 	target.draw(pmenuText);
 }
-
-void PauseMenu::addButton(const std::string key, const std::string text,float y)
+//250
+void PauseMenu::addButton(const std::string key, const std::string text, const float y, const float width, const float height)
 {
-	float width = 250;
 	float x = container.getPosition().x + (container.getSize().x - width) / 2.f;
-	buttons[key] = new Button{ x, y, 150, 50,text, &font, sf::Color(70, 70, 70, 200), sf::Color(250, 250, 250, 255),sf::Color(70, 70, 70, 200), sf::Color(250, 250, 250, 255), sf::Color(20, 20, 20, 50), sf::Color(20, 20, 20, 50), sf::Color(70, 70, 70, 0), sf::Color(150, 150, 150, 0), sf::Color(20, 20, 20, 0) };
+	buttons[key] = new Button{ x, y, width, height,text, &font, sf::Color(70, 70, 70, 200), sf::Color(250, 250, 250, 255),sf::Color(70, 70, 70, 200), sf::Color(250, 250, 250, 255), sf::Color(20, 20, 20, 50), sf::Color(20, 20, 20, 50), sf::Color(70, 70, 70, 0), sf::Color(150, 150, 150, 0), sf::Color(20, 20, 20, 0) };
 }
 
 const bool PauseMenu::isPressed(const std::string key)

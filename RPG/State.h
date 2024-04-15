@@ -7,7 +7,7 @@ class State;
 
 class StateData {
 public:
-	StateData() {}
+	StateData();
 	//Variables
 	sf::RenderWindow* window;
 	std::map<std::string, int>* supportedKeys;
@@ -31,7 +31,7 @@ protected:
 	sf::Vector2i mousePosScreen;
 	sf::Vector2i mousePosWindow;
 	sf::Vector2f mousePosView;
-	sf::Vector2u mousePosGrid;
+	sf::Vector2i mousePosGrid;
 	float keyTime;
 	float keyTimeMax;
 	//Resources
@@ -50,7 +50,11 @@ public:
 	virtual void update(const float& dt) = 0;
 	virtual void render(sf::RenderTarget* target = nullptr) = 0;
 	virtual void updateInput(const float& dt) = 0;
-	virtual void updateMousePositions();
+	virtual void updateMousePositions(sf::View* view);
 	virtual void updateKeyTime(const float dt);
+
+
+
+	
 };
 #endif

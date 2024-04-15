@@ -142,6 +142,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AnimationComponent.cpp" />
+    <ClCompile Include="AttributeComponent.cpp" />
     <ClCompile Include="GraphicsSettings.cpp" />
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="Editor_State.cpp" />
@@ -153,6 +154,7 @@
     <ClCompile Include="MovementComponent.cpp" />
     <ClCompile Include="PauseMenu.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PlayerGUI.cpp" />
     <ClCompile Include="RPG.cpp" />
     <ClCompile Include="SettingState.cpp" />
     <ClCompile Include="State.cpp" />
@@ -166,6 +168,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnimationComponent.h" />
+    <ClInclude Include="AttributeComponent.h" />
     <ClInclude Include="GraphicsSettings.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="Editor_State.h" />
@@ -177,6 +180,7 @@
     <ClInclude Include="MovementComponent.h" />
     <ClInclude Include="PauseMenu.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="PlayerGUI.h" />
     <ClInclude Include="SettingState.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="stdafx.h" />
