@@ -45,7 +45,7 @@ namespace GUI
 		//Functions
 		void update(sf::Vector2i& mousePos);
 		void render(sf::RenderTarget* target);
-		const unsigned calccharsize() const;
+		const unsigned calccharsize(const unsigned modifier = 5) const;
 	};
 
 	class DropDownList {

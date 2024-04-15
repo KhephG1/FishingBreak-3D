@@ -21,7 +21,7 @@ private:
 	void initBackgrounds();
 	void initKeybinds();
 	void initFonts();
-	void initButtons();
+	void initGUI();
 public:
 
 	MainMenuState(StateData* state_data);
@@ -31,5 +31,6 @@ public:
 	virtual void updateInput(const float& dt) override;
 	void updateButtons();
 	void renderButtons(sf::RenderTarget* Target);
+	void resetGUI();
 };
 #endif

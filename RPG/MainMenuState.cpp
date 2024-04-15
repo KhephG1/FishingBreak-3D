@@ -38,7 +38,7 @@ void MainMenuState::initFonts()
 	}
 }
 
-void MainMenuState::initButtons()
+void MainMenuState::initGUI()
 {
 	//the constructor arguments represent the following properties:
 	/*
@@ -73,7 +73,7 @@ MainMenuState::MainMenuState(StateData* state_data) : State(state_data){
 	initBackgrounds();
 	initKeybinds();
 	initFonts();
-	initButtons();
+	initGUI();
 
 }
 
@@ -145,4 +145,10 @@ void MainMenuState::renderButtons(sf::RenderTarget* target)
 	for (auto but : buttons) {
 		but.second->render(target);
 	}
+}
+
+void MainMenuState::resetGUI()
+{
+	buttons.clear();
+	initGUI();
 }

@@ -14,11 +14,10 @@ SettingState::~SettingState()
 }
 SettingState::SettingState(StateData* state_data) : State{state_data} {
 	initVariables();
-	initBackgrounds();
 	initKeybinds();
 	initFonts();
 	initGUI();
-	int test;
+
 }
 
 
@@ -27,14 +26,7 @@ void SettingState::initVariables()
 	modes = sf::VideoMode::getFullscreenModes();
 }
 
-void SettingState::initBackgrounds()
-{
-	if (!backgroundTexture.loadFromFile("Resources/Images/Backgrounds/menu_background.png")) {
-		throw std::invalid_argument{ "failed to load texture" };
-	}
-	background.setSize((sf::Vector2f)window->getSize());
-	background.setTexture(&backgroundTexture);
-}
+
 
 void SettingState::initKeybinds()
 {
@@ -73,6 +65,14 @@ void SettingState::initGUI()
 		modes_str.push_back(std::to_string(i.width) + 'x' + std::to_string(i.height));
 	}
 	dropdownL["RESOLUTION"] = new GUI::DropDownList(p2pX(0.156, vm), p2pY(0.556, vm), p2pX(0.104, vm), p2pY(0.046, vm), font, modes_str, 0);
+
+
+
+	if (!backgroundTexture.loadFromFile("Resources/Images/Backgrounds/menu_background.png")) {
+		throw std::invalid_argument{ "failed to load texture" };
+	}
+	background.setSize(sf::Vector2f{(float)vm.width, (float)vm.height});
+	background.setTexture(&backgroundTexture);
 }
 
 
@@ -128,6 +128,7 @@ void SettingState::updateGUI(const float& dt)
 	if (buttons["APPLY"]->isPressed()) {
 		State_Data->gfxSettings->resolution = modes[dropdownL["RESOLUTION"]->getlistID()];
 		window->create(State_Data->gfxSettings->resolution, State_Data->gfxSettings->title, sf::Style::Default);
+		resetGUI();
 	}
 
 	//dropdownlists
@@ -141,7 +142,7 @@ void SettingState::updateGUI(const float& dt)
 
 	//Text init
 	optionsText.setFont(font);
-	optionsText.setPosition(100, 500);
+	optionsText.setPosition(p2pX(0.052,State_Data->gfxSettings->resolution), p2pY(0.46,State_Data->gfxSettings->resolution));
 	optionsText.setCharacterSize(28);
 	optionsText.setFillColor(sf::Color::White);
 	optionsText.setString("Resolution \nVsync \nAntialiasing \n");
@@ -157,4 +158,21 @@ void SettingState::renderGUI(sf::RenderTarget* target)
 	for (auto& it : dropdownL) {
 		it.second->render(target);
 	}
+}
+/*
+* RESET GUI
+clears the GUI elements and re-initializes it
+used for when the screen is resized
+*/
+void SettingState::resetGUI()
+{
+	for (auto it = buttons.begin(); it != buttons.end(); ++it) {
+		delete it->second;
+	}
+	buttons.clear();
+	for (auto it = dropdownL.begin(); it !=dropdownL.end(); ++it) {
+		delete it->second;
+	}
+	dropdownL.clear();
+	initGUI();
 }

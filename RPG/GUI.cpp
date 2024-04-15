@@ -115,9 +115,9 @@ void Button::render(sf::RenderTarget* target)
 	target->draw(text);
 }
 
-const unsigned GUI::Button::calccharsize() const
+const unsigned GUI::Button::calccharsize(const unsigned modifier) const
 {
-	return (shape.getGlobalBounds().getSize().x + shape.getGlobalBounds().getSize().y )/5;
+	return (shape.getGlobalBounds().getSize().x + shape.getGlobalBounds().getSize().y )/modifier;
 }
 
 DropDownList::DropDownList(float x, float y, float width, float height, sf::Font& fnt, std::vector<std::string> a_list, unsigned default_idx) : font{ fnt }, show_list{ false }, keyTimeMax{ 3.f },keyTime { keyTimeMax }

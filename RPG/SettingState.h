@@ -21,7 +21,6 @@ private:
 	
 	//functions
 	void initVariables();
-	void initBackgrounds();
 	void initKeybinds();
 	void initFonts();
 	void initGUI();
@@ -33,6 +32,7 @@ public:
 	virtual void updateInput(const float& dt) override;
 	void updateGUI(const float& dt);
 	void renderGUI(sf::RenderTarget* Target);
+	void resetGUI();
 };
 
 #endif
