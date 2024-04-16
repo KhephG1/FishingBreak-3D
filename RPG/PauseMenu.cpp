@@ -2,7 +2,7 @@
 #include "PauseMenu.h"
 using namespace GUI;
 
-PauseMenu::PauseMenu(sf::VideoMode& vm, sf::Font& fnt): font {fnt} 
+PauseMenu::PauseMenu(sf::VideoMode& vm, sf::Font& fnt): font {fnt} , VM{vm}
 {
 	//init background
 	background.setSize(sf::Vector2f{ (float)vm.width, (float)vm.height });
@@ -53,7 +53,7 @@ void PauseMenu::render(sf::RenderTarget& target)
 void PauseMenu::addButton(const std::string key, const std::string text, const float y, const float width, const float height)
 {
 	float x = container.getPosition().x + (container.getSize().x - width) / 2.f;
-	buttons[key] = new Button{ x, y, width, height,text, &font, sf::Color(70, 70, 70, 200), sf::Color(250, 250, 250, 255),sf::Color(70, 70, 70, 200), sf::Color(250, 250, 250, 255), sf::Color(20, 20, 20, 50), sf::Color(20, 20, 20, 50), sf::Color(70, 70, 70, 0), sf::Color(150, 150, 150, 0), sf::Color(20, 20, 20, 0) };
+	buttons[key] = new Button{ x, y, width, height,VM,text, &font, sf::Color(70, 70, 70, 200), sf::Color(250, 250, 250, 255),sf::Color(70, 70, 70, 200), sf::Color(250, 250, 250, 255), sf::Color(20, 20, 20, 50), sf::Color(20, 20, 20, 50), sf::Color(70, 70, 70, 0), sf::Color(150, 150, 150, 0), sf::Color(20, 20, 20, 0) };
 }
 
 const bool PauseMenu::isPressed(const std::string key)

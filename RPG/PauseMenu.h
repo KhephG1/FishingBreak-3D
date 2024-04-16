@@ -11,6 +11,7 @@ public:
 	PauseMenu(sf::VideoMode& vm, sf::Font& fnt);
 	virtual ~PauseMenu();
 	std::map<std::string, Button*>& getButtons();
+	 sf::VideoMode& VM;
 	void update(sf::Vector2i& MousePosition);
 	void render(sf::RenderTarget& target);
 	void addButton(const std::string key, const std::string text,const float y,const float width, const float height);

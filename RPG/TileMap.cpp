@@ -63,7 +63,7 @@ void TileMap::update()
 {
 }
 
-void TileMap::render(sf::RenderTarget& target, const sf::Vector2i gridPosition)
+void TileMap::render(sf::RenderTarget& target, const sf::Vector2i gridPosition, const bool show_collision)
 {
 	int layer = 0;
 	from_x = gridPosition.x - 5;
@@ -94,9 +94,11 @@ void TileMap::render(sf::RenderTarget& target, const sf::Vector2i gridPosition)
 				else {
 					tMap.at(x).at(y).at(layer).at(k)->render(target);
 				}
-				if (tMap.at(x).at(y).at(layer).at(k)->getCollision()) {
-					collision_box.setPosition(tMap.at(x).at(y).at(layer).at(k)->getPosition());
-					target.draw(collision_box);
+				if(show_collision){
+					if (tMap.at(x).at(y).at(layer).at(k)->getCollision()) {
+						collision_box.setPosition(tMap.at(x).at(y).at(layer).at(k)->getPosition());
+						target.draw(collision_box);
+					}
 				}
 			}
 		}

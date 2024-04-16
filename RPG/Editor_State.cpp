@@ -59,7 +59,7 @@ void Editor_State::initText()
 
 void Editor_State::initButtons()
 {
-	buttons["HIDE"] =new Button{30,(float)State_Data->gfxSettings->resolution.height - 50 , 150, 30,"HIDE SELECTOR", &font, sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent, sf::Color::White, sf::Color{100,100,100}, sf::Color::Blue, sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent};
+	buttons["HIDE"] =new Button{30,(float)State_Data->gfxSettings->resolution.height - 50 , 150, 30,State_Data->gfxSettings->resolution,"HIDE SELECTOR", &font, sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent, sf::Color::White, sf::Color{100,100,100}, sf::Color::Blue, sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent};
 }
 
 void Editor_State::initTileMap()
@@ -186,7 +186,7 @@ void Editor_State::render(sf::RenderTarget* target)
 	}
 	target->draw(background);
 	target->setView(MainView);
-	map->render(*target, mousePosGrid);
+	map->render(*target, mousePosGrid, true);
 	map->DeferredRender(*target);
 	target->setView(window->getDefaultView());
 	renderButtons(target);

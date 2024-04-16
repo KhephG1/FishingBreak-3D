@@ -62,6 +62,7 @@ private:
 			return done;
 		}
 		//need to rewatch section where this function made
+		//the percentage variable alters the speed at which the animation runs
 		const bool& play(const float& dt, float percentage) {
 			if (percentage < 0.5f) {
 				percentage = 0.5f;

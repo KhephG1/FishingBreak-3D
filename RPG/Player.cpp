@@ -15,17 +15,16 @@ Player::Player(float xpos, float ypos, sf::Texture* tex_sheet) {
 	createSprite(tex_sheet);
 	setPosition(xpos, ypos);
 	sprite->setScale(1, 1);
-	createMovementComponent(100.f, 1500.f, 500.f);
+	createMovementComponent(100.f, 1500.f, 900.f);
 	createAnimationtComponent(*tex_sheet);
-	createHitboxComponent(*sprite,86.f,66.f,86.f,111.f);
+	createHitboxComponent(*sprite,10.f,5.f,44.f,54.f);
 	createAttributeComponent(1);
 
-	animationComponent->addAnimation("IDLE", 10.f, 0, 0, 13, 0, 192, 192);
-
-	animationComponent->addAnimation("RUN", 6.f, 0, 1, 11, 1, 192, 192);
-
-
-	animationComponent->addAnimation("ATTACK", 5.f, 0, 2, 13, 2, 192 * 2, 192);
+	animationComponent->addAnimation("IDLE", 15.f, 0, 0,8, 0, 64, 64);
+	animationComponent->addAnimation("WALK_DOWN", 15.f, 0, 1, 3, 1, 64, 64);
+	animationComponent->addAnimation("WALK_UP", 15.f, 12, 1, 15, 1, 64, 64);
+	animationComponent->addAnimation("WALK_LEFT",15.f, 4, 1, 7, 1, 64, 64);
+	animationComponent->addAnimation("WALK_RIGHT", 15.f, 8, 1, 11, 1, 64, 64);
 }
 Player::~Player()
 {
@@ -38,7 +37,7 @@ AttributeComponent* Player::getAttributeComponent()
 
 void Player::updateAnimation(const float& dt)
 {
-
+	/*
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 		attacking = true;
 	} 
@@ -50,6 +49,7 @@ void Player::updateAnimation(const float& dt)
 		else {//facing right
 			sprite->setOrigin(258.f + 96.f, 0.f);
 		}
+		
 		if (animationComponent->play("ATTACK", dt, true)) {
 			sprite->setOrigin(258.f, 0.f);
 			attacking = false;
@@ -60,29 +60,32 @@ void Player::updateAnimation(const float& dt)
 				sprite->setOrigin(258.f, 0.f);
 			}
 		}
+		
 	}
+	*/
 	if (movementComp->getState(IDLE)) {
 		animationComponent->play("IDLE",dt);
 	}
 	else if(movementComp->getState(MOVING_LEFT)) {
 		sprite->setOrigin(0, 0);
 		sprite->setScale(1, 1);
-		animationComponent->play("RUN", dt,-movementComp->getVelocity().x, movementComp->getMaxVelocity());
+		//the get "movementcomp->getvelocity..." arguments determine the speed at which the animation plays. If we are moving slower, the animation plays slower
+		animationComponent->play("WALK_LEFT", dt,-movementComp->getVelocity().x, movementComp->getMaxVelocity());
 	}
 	else if (movementComp->getState(MOVING_RIGHT)) {
-		sprite->setOrigin(258.f, 0);
-		sprite->setScale(-1, 1);
-		animationComponent->play("RUN", dt, movementComp->getVelocity().x, movementComp->getMaxVelocity());
+		//sprite->setOrigin(258.f, 0);
+		sprite->setScale(1, 1);
+		animationComponent->play("WALK_RIGHT", dt, movementComp->getVelocity().x, movementComp->getMaxVelocity());
 	}
 	else if (movementComp->getState(MOVING_UP)) {
 		sprite->setOrigin(0, 0);
 		sprite->setScale(1, 1);
-		animationComponent->play("RUN", dt, -movementComp->getVelocity().y, movementComp->getMaxVelocity());
+		animationComponent->play("WALK_UP", dt, -movementComp->getVelocity().y, movementComp->getMaxVelocity());
 	}
 	else if (movementComp->getState(MOVING_DOWN)) {
 		sprite->setOrigin(0, 0);
 		sprite->setScale(1, 1);
-		animationComponent->play("RUN", dt, movementComp->getVelocity().y, movementComp->getMaxVelocity());
+		animationComponent->play("WALK_DOWN", dt, movementComp->getVelocity().y, movementComp->getMaxVelocity());
 	}
 
 }
@@ -106,7 +109,9 @@ void Player::update(const float& dt)
 void Player::render(sf::RenderTarget* target)
 {
 	target->draw(*sprite);
-	hitbox->render(*target);
+	if (show_hitbox) {
+		hitbox->render(*target);
+	}
 
 }
 
@@ -137,4 +142,19 @@ void Player::loseXP(const int xp)
 	if (attributeComponent->exp < 0) {
 		attributeComponent->exp = 0;
 	}
+}
+
+void Player::hideHitbox(const bool choice)
+{
+	if (choice == true) {
+		show_hitbox = false;
+	}
+	else {
+		show_hitbox = true;
+	}
+}
+
+const bool Player::showHitbox() const
+{
+	return show_hitbox;
 }

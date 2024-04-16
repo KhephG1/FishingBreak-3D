@@ -1,7 +1,11 @@
 #include "stdafx.h"
 #include "GUI.h"
 using namespace GUI;
-
+//functionality for dynamically resizing the GUI when the window is resized
+const unsigned GUI::calccharsize(sf::VideoMode& vm,const unsigned modifier) 
+{
+	return static_cast<unsigned>((vm.width + vm.height) / modifier);
+}
 const float GUI::p2pX(const float percent, const sf::VideoMode& vm)
 {
 	return (float)vm.width * percent;
@@ -15,7 +19,7 @@ const float GUI::p2pY(const float percent, const sf::VideoMode& vm)
 
 
 
-Button::Button(float x, float y, float width, float height, std::string text, sf::Font* font,
+Button::Button(float x, float y, float width, float height,sf::VideoMode& vm,std::string text, sf::Font* font,
 	sf::Color Outline_idle, sf::Color Outline_hover, sf::Color Outline_active,
 	sf::Color text_idle, sf::Color text_hover, sf::Color text_active,
 	sf::Color idleColor, sf::Color hoverColor, sf::Color activeColor, short unsigned id){
@@ -29,7 +33,7 @@ Button::Button(float x, float y, float width, float height, std::string text, sf
 	this->text.setFont(*font);
 	this->text.setString(text);
 	this->text.setFillColor(text_idle);
-	this->text.setCharacterSize(calccharsize());
+	this->text.setCharacterSize(calccharsize(vm));
 	this->text_idle = text_idle;
 	this->text_hover = text_hover;
 	this->text_active = text_active;
@@ -115,21 +119,17 @@ void Button::render(sf::RenderTarget* target)
 	target->draw(text);
 }
 
-const unsigned GUI::Button::calccharsize(const unsigned modifier) const
-{
-	return (shape.getGlobalBounds().getSize().x + shape.getGlobalBounds().getSize().y )/modifier;
-}
 
-DropDownList::DropDownList(float x, float y, float width, float height, sf::Font& fnt, std::vector<std::string> a_list, unsigned default_idx) : font{ fnt }, show_list{ false }, keyTimeMax{ 3.f },keyTime { keyTimeMax }
+DropDownList::DropDownList(float x, float y, float width, float height,sf::VideoMode& vm, sf::Font& fnt, std::vector<std::string> a_list, unsigned default_idx) : font{ fnt }, show_list{ false }, keyTimeMax{ 3.f },keyTime { keyTimeMax }
 {
 	unsigned counter{};
 	for (auto str : a_list) {
-		list.push_back(new Button{ x, y + (counter + 1) * height, width,height, str, &font,
+		list.push_back(new Button{ x, y + (counter + 1) * height, width,height,vm, str, &font,
 		 sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent, sf::Color::White, sf::Color{100,100,100}, sf::Color::Blue, sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent,(unsigned short)counter });
 
 		counter++;
 	}
-	activeElement = new Button{ x, y, width, height,a_list.at(default_idx), &font, 
+	activeElement = new Button{ x, y, width, height,vm,a_list.at(default_idx), &font, 
 		 sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent, sf::Color::White, sf::Color{100,100,100}, sf::Color::Blue, sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent };
 }
 

@@ -6,6 +6,7 @@ class Player: public Entity
 private:
 	bool facing_right;
 	bool attacking;
+	bool show_hitbox;
 	void initVariables();
 	void initComponents();
 public:
@@ -21,5 +22,7 @@ public:
 	void gainHP(const int hp);
 	void gainXP(const int xp);
 	void loseXP(const int xp);
+	void hideHitbox(const bool choice);
+	const bool showHitbox() const;
 };
 #endif

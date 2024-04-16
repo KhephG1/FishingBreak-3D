@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "PlayerGUI.h"
 
+
 void PlayerGUI::initFont()
 {
 	if (!font.loadFromFile("Resources/Fonts/Halo3.ttf"))
@@ -9,27 +10,28 @@ void PlayerGUI::initFont()
 
 void PlayerGUI::initLevelBar()
 {
-	float width = 50.f;
-	float height = 50.f;
-	float x = 20.f;
-	float y = 160.f;
+	float width = GUI::p2pX(0.026f,VM);
+
+	float height = GUI::p2pY(0.046, VM);;
+	float x = GUI::p2pX(0.01f,VM);
+	float y = GUI::p2pY(0.148,VM);
 	lvlBarOutline.setSize(sf::Vector2f(width, height));
 	lvlBarOutline.setFillColor(sf::Color{ 0,255,10,200 });
 	lvlBarOutline.setPosition(x, y);
 	lvlBarOutline.setOutlineThickness(-2.f);
 	lvlBarOutline.setOutlineColor(sf::Color::Red);
 	lvlBarText.setFont(font);
-	lvlBarText.setCharacterSize(40);
-	lvlBarText.setPosition(lvlBarOutline.getPosition().x + 15.f, lvlBarOutline.getPosition().y);
+	lvlBarText.setCharacterSize(GUI::calccharsize(VM,80));
+	lvlBarText.setPosition(lvlBarOutline.getPosition().x + GUI::p2pX(0.00781,VM), lvlBarOutline.getPosition().y);
 }
 
 void PlayerGUI::initEXPBar()
 {
 	//usually don't want to put local variables in functions called often since takes time
-	float width = 300.f;
-	float height = 50.f;
-	float x = 20.f;
-	float y = 80.f;
+	float width = GUI::p2pX(0.156f, VM);;
+	float height = GUI::p2pY(0.046f, VM);;
+	float x = GUI::p2pX(0.01f,VM);
+	float y = GUI::p2pY(0.0741f,VM);
 	ExpBarMaxWidth = width;
 	expBarOutline.setSize(sf::Vector2f(width, height));
 	expBarFill.setFillColor(sf::Color{ 250,0,20,200 });
@@ -37,17 +39,19 @@ void PlayerGUI::initEXPBar()
 	expBarOutline.setPosition(x, y);
 	expBarFill.setSize(expBarOutline.getSize());
 	expBarFill.setPosition(expBarOutline.getPosition());
+	expBarText.setCharacterSize(GUI::calccharsize(VM, 80));
 	expBarText.setFont(font);
-	expBarText.setPosition(expBarOutline.getPosition().x + 10.f, expBarOutline.getPosition().y + 10.f);
+	expBarText.setPosition(expBarOutline.getPosition().x + GUI::p2pX(0.0052,VM), expBarOutline.getPosition().y + GUI::p2pY(0.00925,VM));
 }
 
 void PlayerGUI::inithpBar()
 {
 	//usually don't want to put local variables in functions called often since takes time
-	float width = 300.f;
-	float height = 50.f;
-	float x = 20.f;
-	float y = 20.f;
+	float width = GUI::p2pX(0.156f,VM);
+	float height = GUI::p2pY(0.046f,VM);
+	float x = GUI::p2pX(0.01f,VM);
+	float y = GUI::p2pY(0.0185f,VM)
+		;
 	hpBarMaxWidth = width;
 	hpBarOutline.setSize(sf::Vector2f(width, height));
 	hpBarFill.setFillColor(sf::Color{ 250,0,20,200 });
@@ -56,11 +60,12 @@ void PlayerGUI::inithpBar()
 	hpBarFill.setSize(hpBarOutline.getSize());
 	hpBarFill.setPosition(hpBarOutline.getPosition());
 	hpBarText.setFont(font);
-	hpBarText.setPosition(hpBarOutline.getPosition().x + 10.f, hpBarOutline.getPosition().y + 10.f);
+	hpBarText.setPosition(hpBarOutline.getPosition().x + GUI::p2pX(0.0052, VM), hpBarOutline.getPosition().y + GUI::p2pY(0.00925, VM));
+	hpBarText.setCharacterSize(GUI::calccharsize(VM, 80));
 
 }
 
-PlayerGUI::PlayerGUI(Player* plyr): player{plyr}
+PlayerGUI::PlayerGUI(Player* plyr, sf::VideoMode& vm): player{plyr}, VM{vm}
 {
 	initFont();
 	inithpBar();

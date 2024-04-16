@@ -120,8 +120,9 @@ void GameState::render(sf::RenderTarget* target)
 	}
 	render_tex.clear();
 	render_tex.setView(MainView);
-	tMap->render(render_tex, player->getGridPosition(static_cast<int>(State_Data->gridsize)));
+	tMap->render(render_tex, player->getGridPosition(static_cast<int>(State_Data->gridsize)),false);
 	if (player) {
+		player->hideHitbox(true);
 		player->render(&render_tex);
 	}
 	tMap->DeferredRender(render_tex);
@@ -185,7 +186,7 @@ void GameState::initPauseMenu()
 
 void GameState::initPlayerGUI()
 {
-	playerGUI = new PlayerGUI{ player };
+	playerGUI = new PlayerGUI{ player,State_Data->gfxSettings->resolution };
 }
 
 void GameState::updateTileMap(const float& dt)
@@ -204,8 +205,10 @@ void GameState::updatePauseButtons()
 void GameState::updateView(const float& dt)
 {
 	//instead of moving the camera manually like in editor state, we set the camera to always follow the player
-	//to avoid "tearing" which results from moving the camera using floating point values, we can use the floor function to reduce 
-	MainView.setCenter(std::floor(player->getPosition().x), std::floor(player->getPosition().y));
+	//to avoid "tearing" which results from moving the camera using floating point values, we can use the floor function to reduce
+	 
+	MainView.setCenter(std::floor(player->getPosition().x +(float)(mousePosWindow.x - (float)State_Data->gfxSettings->resolution.width/2.f)/5.f ), 
+		std::floor(player->getPosition().y + (float)(mousePosWindow.y - (float)State_Data->gfxSettings->resolution.height/2.f))/2.f);
 }
 
 void GameState::updatePlayerGUI(const float& dt)

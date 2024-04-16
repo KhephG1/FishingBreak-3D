@@ -18,7 +18,7 @@ private:
 
 	//functions
 	void initVariables();
-	void initBackgrounds();
+
 	void initKeybinds();
 	void initFonts();
 	void initGUI();

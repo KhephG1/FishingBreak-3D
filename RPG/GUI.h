@@ -6,6 +6,7 @@ enum button_states{BTN_IDLE = 0, BTN_HOVER, BTN_PRESSED};
 
 namespace GUI
 {
+	const unsigned calccharsize(sf::VideoMode& vm,const unsigned modifier = 80);
 	const float p2pX(const float percent, const sf::VideoMode& vm);
 	const float p2pY(const float percent, const sf::VideoMode& vm);
 	class Button
@@ -30,7 +31,7 @@ namespace GUI
 
 
 	public:
-		Button(float x, float y, float width, float height, std::string text, sf::Font* font, 
+		Button(float x, float y, float width, float height,sf::VideoMode& vm, std::string text, sf::Font* font, 
 			sf::Color Outline_idle, sf::Color Outline_hover, sf::Color Outline_active, 
 			sf::Color text_idle, sf::Color text_hover, sf::Color text_active, 
 			sf::Color idleColor, sf::Color hoverColor, sf::Color activeColor, short unsigned id =0);
@@ -45,7 +46,7 @@ namespace GUI
 		//Functions
 		void update(sf::Vector2i& mousePos);
 		void render(sf::RenderTarget* target);
-		const unsigned calccharsize(const unsigned modifier = 5) const;
+		
 	};
 
 	class DropDownList {
@@ -58,7 +59,7 @@ namespace GUI
 
 		bool show_list;
 	public:
-		DropDownList(float x, float y, float width, float height, sf::Font& fnt, std::vector<std::string> a_list, unsigned default_idx);
+		DropDownList(float x, float y, float width, float height,sf::VideoMode& vm, sf::Font& fnt, std::vector<std::string> a_list, unsigned default_idx);
 		virtual ~DropDownList();
 		const bool getkeyTime();
 		void updateKeyTime(const float& dt);
