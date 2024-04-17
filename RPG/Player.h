@@ -17,7 +17,7 @@ public:
 	void updateAttack();
 	void updateAnimation(const float& dt);
 	virtual void update(const float& dt) override;
-	virtual void render(sf::RenderTarget* target) override;
+	virtual void render(sf::RenderTarget* target, sf::Shader* shader) override;
 	void loseHP(const int hp);
 	void gainHP(const int hp);
 	void gainXP(const int xp);

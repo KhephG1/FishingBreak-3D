@@ -29,9 +29,9 @@ public:
 	TileMap(float gridSize, int width, int height, std::string texture_file);
 	virtual ~TileMap();
 	void update();
-	void render(sf::RenderTarget& target,const sf::Vector2i gridPosition, const bool show_collision = false);
+	void render(sf::RenderTarget& target, const sf::Vector2i gridPosition, const bool show_collision = false, sf::Vector2f playerPos = sf::Vector2f{}, sf::Shader* shader = nullptr);
 	//used to render tiles above the player
-	void DeferredRender(sf::RenderTarget& target);
+	void DeferredRender(sf::RenderTarget& target, sf::Vector2f playerPos =  sf::Vector2f{}, sf::Shader* shader = nullptr);
 	void addTile(const int x, const int y, const int z, const sf::IntRect texture_rect, const bool collision, const short type);
 	void removeTile(const int x, const int y, const int z);
 	void saveToFile(const std::string file_name);

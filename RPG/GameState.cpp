@@ -62,6 +62,7 @@ GameState::GameState(StateData* state_data) : State{state_data}
 	initKeybinds();
 	initPlayers();
 	initPauseMenu();
+	initShaders();
 	initTileMap();
 	initPlayerGUI();
 }
@@ -120,12 +121,12 @@ void GameState::render(sf::RenderTarget* target)
 	}
 	render_tex.clear();
 	render_tex.setView(MainView);
-	tMap->render(render_tex, player->getGridPosition(static_cast<int>(State_Data->gridsize)),false);
+	tMap->render(render_tex, player->getGridPosition(static_cast<int>(State_Data->gridsize)),false,player->getCenter(), &core_shader);
 	if (player) {
 		player->hideHitbox(true);
-		player->render(&render_tex);
+		player->render(&render_tex, &core_shader);
 	}
-	tMap->DeferredRender(render_tex);
+	tMap->DeferredRender(render_tex,player->getCenter(),&core_shader);
 	//begin rendering gui using the default view (not dependant on where we are in map)
 	render_tex.setView(window->getDefaultView());
 	playerGUI->render(render_tex);
@@ -187,6 +188,15 @@ void GameState::initPauseMenu()
 void GameState::initPlayerGUI()
 {
 	playerGUI = new PlayerGUI{ player,State_Data->gfxSettings->resolution };
+}
+
+void GameState::initShaders()
+{
+	//see book of shaders.com for how shaders work
+	//shaders use GPU --> calculated in parallel (CPU calculates one at a time
+	if (!core_shader.loadFromFile("vertex_shader.vert", "fragment_shader.frag")) {
+		std::cout<<"ERROR::GAMESTATE::COULDNOTLOADSHADER"<<std::endl;
+	}
 }
 
 void GameState::updateTileMap(const float& dt)

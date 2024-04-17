@@ -83,6 +83,16 @@ const sf::FloatRect& Entity::getNextBounds(const float& dt) const
 	throw std::runtime_error{ "ENTITY::GETNEXTBOUNDS ERROR" };
 }
 
+const sf::Vector2f Entity::getCenter() const
+{
+	if (hitbox) {
+		sf::Vector2f temp{ hitbox->getPosition().x + hitbox->getGlobalBounds().width / 2.f, hitbox->getPosition().y + hitbox->getGlobalBounds().height / 2.f };
+		return temp;
+	}
+
+	return sf::Vector2f{ sprite->getPosition().x + sprite->getGlobalBounds().width / 2.f, sprite->getPosition().y + sprite->getGlobalBounds().height / 2.f };
+}
+
 //the entity set position function handles setting the hitbox position (if it has one) and the sprite position only otherwise
 //the hotbox set position handles setting the sprite position relative to the hitbox position
 void Entity::setPosition(const float x, const float y)
@@ -110,7 +120,7 @@ void Entity::update(const float& dt)
 	
 }
 
-void Entity::render(sf::RenderTarget* target)
+void Entity::render(sf::RenderTarget* target, sf::Shader* shader)
 {
 
 }

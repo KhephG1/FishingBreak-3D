@@ -6,13 +6,13 @@ class Tile
 {
 private:
 protected:
-	sf::RectangleShape shape;
+	sf::Sprite shape;
 public:
 
 	virtual ~Tile();
 	Tile();
 	Tile(int grid_x, int grid_y, float gridSizeF, const sf::Texture& texture, const sf::IntRect texture_rect, bool collision= false, short type = DEFAULT);
-	void render(sf::RenderTarget& target);
+	void render(sf::RenderTarget& target,sf::Vector2f playerPos, sf::Shader* shader = nullptr);
 	void update();
 	//the type of tile we are saving
 	short type;

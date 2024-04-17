@@ -63,23 +63,23 @@ void TileMap::update()
 {
 }
 
-void TileMap::render(sf::RenderTarget& target, const sf::Vector2i gridPosition, const bool show_collision)
+void TileMap::render(sf::RenderTarget& target, const sf::Vector2i gridPosition, const bool show_collision,sf::Vector2f playerPos, sf::Shader* shader)
 {
 	int layer = 0;
-	from_x = gridPosition.x - 5;
+	from_x = gridPosition.x - 12;
 	if (from_x < 0) {
 		from_x = 0;
 	}
-	to_x = gridPosition.x + 8;
+	to_x = gridPosition.x + 13;
 	if (to_x > maxSizeGrid.x) {
 		to_x = maxSizeGrid.x;
 	}
 
-	from_y = gridPosition.y - 5;
+	from_y = gridPosition.y - 9;
 	if (from_y < 0) {
 		from_y = 0;
 	}
-	to_y = gridPosition.y + 8;
+	to_y = gridPosition.y + 11;
 	if (to_y > maxSizeGrid.y) {
 		to_y = maxSizeGrid.y;
 	}
@@ -92,7 +92,8 @@ void TileMap::render(sf::RenderTarget& target, const sf::Vector2i gridPosition, 
 					deferredRenderTiles.push(tMap.at(x).at(y).at(layer).at(k));
 				}
 				else {
-					tMap.at(x).at(y).at(layer).at(k)->render(target);
+					if(shader)
+						tMap.at(x).at(y).at(layer).at(k)->render(target,playerPos,shader);
 				}
 				if(show_collision){
 					if (tMap.at(x).at(y).at(layer).at(k)->getCollision()) {
@@ -106,10 +107,15 @@ void TileMap::render(sf::RenderTarget& target, const sf::Vector2i gridPosition, 
 	
 }
 
-void TileMap::DeferredRender(sf::RenderTarget& target)
+void TileMap::DeferredRender(sf::RenderTarget& target,sf::Vector2f playerPos, sf::Shader* shader)
 {
 	while (!deferredRenderTiles.empty()) {
-		deferredRenderTiles.top()->render(target);
+		if (shader) {
+			deferredRenderTiles.top()->render(target, playerPos, shader);
+		}
+		else {
+			deferredRenderTiles.top()->render(target, playerPos);
+		}
 		deferredRenderTiles.pop();
 	}
 }

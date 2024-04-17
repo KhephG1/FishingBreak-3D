@@ -24,6 +24,8 @@ private:
 	sf::Font fnt;
 	TileMap* tMap;
 	PlayerGUI* playerGUI;
+
+	sf::Shader core_shader;
 public:
 
 	GameState(StateData* state_data);
@@ -31,13 +33,14 @@ public:
 	void initFonts();
 	void initPauseMenu();
 	void initPlayerGUI();
+	void initShaders();
 	void updateTileMap(const float& dt);
 	void updatePauseButtons();
 	void updateView(const float& dt);
 	void updatePlayerGUI(const float& dt);
 	virtual void updateInput(const float& dt) override;
 	virtual void update (const float& dt) override;
-	virtual void render (sf::RenderTarget* target = nullptr) override;
+	virtual void render(sf::RenderTarget* target = nullptr) override;
 	virtual void updatePlayerInput(const float& dt);
 };
 #endif

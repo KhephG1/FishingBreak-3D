@@ -106,9 +106,18 @@ void Player::update(const float& dt)
 	
 }
 
-void Player::render(sf::RenderTarget* target)
+void Player::render(sf::RenderTarget* target, sf::Shader* shader)
 {
-	target->draw(*sprite);
+	//find the uniform hasTexture and set it to true
+	if (shader) {
+		shader->setUniform("hasTexture", true);
+		shader->setUniform("lightPos", getCenter());
+		target->draw(*sprite, shader);
+	}
+	else {
+		target->draw(*sprite);
+	}
+	
 	if (show_hitbox) {
 		hitbox->render(*target);
 	}
