@@ -21,7 +21,7 @@ Tile::Tile(int grid_x, int grid_y,float gridSizeF, const sf::Texture& texture, c
 	type = the_type;
 }
 
-void Tile::render(sf::RenderTarget& target, sf::Vector2f playerPos, sf::Shader* shader)
+void Tile::render(sf::RenderTarget& target, sf::Vector2f playerPos, sf::Shader* shader) const
 {
 	if (shader) {
 		shader->setUniform("hasTexture", true);
@@ -35,6 +35,7 @@ void Tile::render(sf::RenderTarget& target, sf::Vector2f playerPos, sf::Shader* 
 
 void Tile::update()
 {
+	shape.setColor(sf::Color::Blue);
 }
 const sf::Vector2f& Tile::getPosition() const
 {

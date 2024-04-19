@@ -109,7 +109,7 @@ namespace GUI
 
 
 	public:
-		ProgressBar(float x, float y, float width, float height,int max_value, sf::VideoMode& vm, sf::Font* fnt = nullptr);
+		ProgressBar(float x, float y, float width, float height,int max_value, sf::VideoMode& vm,sf::Color inner_color, unsigned character_size, sf::Font* fnt = nullptr);
 		virtual~ProgressBar();
 
 

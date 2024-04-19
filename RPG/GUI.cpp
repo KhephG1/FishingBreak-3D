@@ -290,7 +290,7 @@ void GUI::textureSelector::render(sf::RenderTarget& target)
 
 }
 //PROGRESS BAR ****************************************************************************
-GUI::ProgressBar::ProgressBar(float xpos, float ypos, float w, float h,int max_value, sf::VideoMode& VM,sf::Font* fnt)
+GUI::ProgressBar::ProgressBar(float xpos, float ypos, float w, float h,int max_value,sf::VideoMode& VM, sf::Color inner_color, unsigned character_size,sf::Font* fnt)
 {
 	float width = GUI::p2pX(w, VM);
 	float height = GUI::p2pY(h, VM);
@@ -299,7 +299,7 @@ GUI::ProgressBar::ProgressBar(float xpos, float ypos, float w, float h,int max_v
 	maxVal = max_value;
 	BarMaxWidth = width;
 	BarOutline.setSize(sf::Vector2f(width, height));
-	BarFill.setFillColor(sf::Color{ 250,0,20,200 });
+	BarFill.setFillColor(sf::Color{ inner_color });
 	BarOutline.setFillColor(sf::Color{ 100,100,100,200 });
 	BarOutline.setPosition(x, y);
 	BarFill.setSize(BarOutline.getSize());
@@ -307,7 +307,7 @@ GUI::ProgressBar::ProgressBar(float xpos, float ypos, float w, float h,int max_v
 	if (fnt) {
 		Text.setFont(*fnt);
 		Text.setPosition(BarOutline.getPosition().x + GUI::p2pX(0.0052, VM), BarOutline.getPosition().y + GUI::p2pY(0.00925, VM));
-		Text.setCharacterSize(GUI::calccharsize(VM, 80));
+		Text.setCharacterSize(GUI::calccharsize(VM, character_size));
 	}
 }
 

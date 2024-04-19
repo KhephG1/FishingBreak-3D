@@ -29,7 +29,6 @@ public:
 	TileMap(float gridSize, int width, int height, std::string texture_file);
 	TileMap(const std::string file_name);
 	virtual ~TileMap();
-	void update();
 	void render(sf::RenderTarget& target, const sf::Vector2i gridPosition, const bool show_collision = false, sf::Vector2f playerPos = sf::Vector2f{}, sf::Shader* shader = nullptr);
 	//used to render tiles above the player
 	void DeferredRender(sf::RenderTarget& target, sf::Vector2f playerPos =  sf::Vector2f{}, sf::Shader* shader = nullptr);
@@ -39,7 +38,7 @@ public:
 	void loadFromFile(const std::string file_name);
 	const sf::Texture* getileSheet() const;
 
-	void updateCollision(Entity* entity, const float& dt);
+	void update(Entity* entity, const float& dt);
 
 	//Accessors
 	const int getLayer(const int x, const int y, const int layer) const;

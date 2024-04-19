@@ -7,6 +7,7 @@
 #include "PlayerGUI.h"
 #include "Sword.h"
 #include "Bow.h"
+#include "Enemy.h"
 class GameState: public State
 {
 private:
@@ -23,6 +24,7 @@ private:
 	sf::RenderTexture render_tex;
 	sf::Sprite renderSprite;
 	Player* player;
+
 	PauseMenu* pmenu;
 	sf::Font fnt;
 	TileMap* tMap;

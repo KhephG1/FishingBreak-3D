@@ -1,7 +1,7 @@
 #ifndef TILE_H
 #define TILE_H
 
-enum TileTypes { DEFAULT = 0, DAMAGING, ABOVE };
+enum TileTypes { DEFAULT = 0, DAMAGING, ABOVE,ENEMYSPAWNER };
 class Tile
 {
 private:
@@ -12,8 +12,8 @@ public:
 	virtual ~Tile();
 	Tile();
 	Tile(int grid_x, int grid_y, float gridSizeF, const sf::Texture& texture, const sf::IntRect texture_rect, bool collision= false, short type = DEFAULT);
-	void render(sf::RenderTarget& target, sf::Vector2f playerPos = sf::Vector2f{}, sf::Shader* shader = nullptr);
-	void update();
+	void render(sf::RenderTarget& target, sf::Vector2f playerPos = sf::Vector2f{}, sf::Shader* shader = nullptr) const;
+	virtual void update();
 	//the type of tile we are saving
 	short type;
 	//does the tile support collisions

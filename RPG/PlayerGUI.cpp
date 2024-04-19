@@ -27,32 +27,14 @@ void PlayerGUI::initLevelBar()
 
 void PlayerGUI::initEXPBar()
 {
-	//usually don't want to put local variables in functions called often since takes time
-	float width = GUI::p2pX(0.156f, VM);;
-	float height = GUI::p2pY(0.046f, VM);;
-	float x = GUI::p2pX(0.01f,VM);
-	float y = GUI::p2pY(0.0741f,VM);
-	ExpBarMaxWidth = width;
-	expBarOutline.setSize(sf::Vector2f(width, height));
-	expBarFill.setFillColor(sf::Color{ 250,0,20,200 });
-	expBarOutline.setFillColor(sf::Color{ 100,100,100,200 });
-	expBarOutline.setPosition(x, y);
-	expBarFill.setSize(expBarOutline.getSize());
-	expBarFill.setPosition(expBarOutline.getPosition());
-	expBarText.setCharacterSize(GUI::calccharsize(VM, 80));
-	expBarText.setFont(font);
-	expBarText.setPosition(expBarOutline.getPosition().x + GUI::p2pX(0.0052,VM), expBarOutline.getPosition().y + GUI::p2pY(0.00925,VM));
+
+	expBar = new GUI::ProgressBar{ 0.01f,0.0741f,0.156f,0.046f,player->getAttributeComponent()->expNext,VM,sf::Color::Blue,80,&font };
 }
 
 void PlayerGUI::inithpBar()
 {
 	//usually don't want to put local variables in functions called often since takes time
-	float width = GUI::p2pX(0.156f,VM);
-	float height = GUI::p2pY(0.046f,VM);
-	float x = GUI::p2pX(0.01f,VM);
-	float y = GUI::p2pY(0.0185f,VM)
-		;
-	hpBar = new GUI::ProgressBar{ 0.01f,0.0185f,0.156f,0.046f,player->getAttributeComponent()->hpMax,VM,&font };
+	hpBar = new GUI::ProgressBar{ 0.01f,0.0185f,0.156f,0.046f,player->getAttributeComponent()->hpMax,VM,sf::Color::Red,80,&font };
 
 }
 
@@ -67,6 +49,7 @@ PlayerGUI::PlayerGUI(Player* plyr, sf::VideoMode& vm): player{plyr}, VM{vm}
 PlayerGUI::~PlayerGUI()
 {
 	delete hpBar;
+	delete expBar;
 }
 
 void PlayerGUI::updatehpBar()
@@ -77,9 +60,7 @@ void PlayerGUI::updatehpBar()
 
 void PlayerGUI::updateEXPBar()
 {
-	float percent = static_cast<float>(player->getAttributeComponent()->exp) / static_cast<float>(player->getAttributeComponent()->expNext);
-	expBarFill.setSize(sf::Vector2f{ ExpBarMaxWidth * percent, expBarFill.getSize().y });
-	expBarText.setString(std::to_string(player->getAttributeComponent()->exp) + "/" + std::to_string(player->getAttributeComponent()->expNext));
+	expBar->update(player->getAttributeComponent()->exp);
 }
 
 void PlayerGUI::updatelvlbar()
@@ -95,9 +76,7 @@ void PlayerGUI::renderhpBar(sf::RenderTarget& target)
 
 void PlayerGUI::renderEXPBar(sf::RenderTarget& target)
 {
-	target.draw(expBarOutline);
-	target.draw(expBarFill);
-	target.draw(expBarText);
+	expBar->render(target);
 }
 
 void PlayerGUI::renderlvlBar(sf::RenderTarget& target)

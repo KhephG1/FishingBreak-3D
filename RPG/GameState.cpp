@@ -67,7 +67,6 @@ GameState::GameState(StateData* state_data) : State{state_data}
 	initTileMap();
 	initPlayerGUI();
 
-
 }
 
 GameState::~GameState()
@@ -75,6 +74,7 @@ GameState::~GameState()
 	delete player;
 	delete tMap;
 	delete playerGUI;
+
 }
 
 void GameState::updateInput(const float& dt)
@@ -109,6 +109,7 @@ void GameState::update(const float& dt)
 			player->update(dt,mousePosView);//moves player
 		}
 		updatePlayerGUI(dt);
+		
 	}
 	else {
 		pmenu->update(mousePosWindow);
@@ -205,9 +206,9 @@ void GameState::initShaders()
 
 void GameState::updateTileMap(const float& dt)
 {
-	tMap->update();
-	tMap->updateCollision(player,dt);
-
+	
+	tMap->update(player,dt);
+	
 }
 
 void GameState::updatePauseButtons()

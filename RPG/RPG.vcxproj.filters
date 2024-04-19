@@ -31,6 +31,9 @@
     <Filter Include="Item">
       <UniqueIdentifier>{12c0876d-efba-4d06-86db-4f083389c4fe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="States\EditorModes">
+      <UniqueIdentifier>{8f15d136-2ea9-43e8-96e2-ddfdd6a565c0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="RPG.cpp">
@@ -108,7 +111,16 @@
     <ClCompile Include="RangedWeapon.cpp">
       <Filter>Item</Filter>
     </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>Entities</Filter>
+    </ClCompile>
     <ClCompile Include="SkillComponent.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemySpawner.cpp">
+      <Filter>Map</Filter>
+    </ClCompile>
+    <ClCompile Include="EditorMode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -185,7 +197,16 @@
     <ClInclude Include="Bow.h">
       <Filter>Item</Filter>
     </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>Entities</Filter>
+    </ClInclude>
     <ClInclude Include="SkillComponent.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemySpawner.h">
+      <Filter>Map</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorMode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -14,11 +14,7 @@ private:
 	
 
 	//EXP
-	std::string expBarstring;
-	sf::Text expBarText;
-	float ExpBarMaxWidth;
-	sf::RectangleShape expBarOutline;
-	sf::RectangleShape expBarFill;
+	GUI::ProgressBar* expBar;
 
 	//Level
 	std::string lvlBarstring;
