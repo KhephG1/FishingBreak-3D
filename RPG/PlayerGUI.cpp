@@ -52,16 +52,7 @@ void PlayerGUI::inithpBar()
 	float x = GUI::p2pX(0.01f,VM);
 	float y = GUI::p2pY(0.0185f,VM)
 		;
-	hpBarMaxWidth = width;
-	hpBarOutline.setSize(sf::Vector2f(width, height));
-	hpBarFill.setFillColor(sf::Color{ 250,0,20,200 });
-	hpBarOutline.setFillColor(sf::Color{ 100,100,100,200 });
-	hpBarOutline.setPosition(x, y);
-	hpBarFill.setSize(hpBarOutline.getSize());
-	hpBarFill.setPosition(hpBarOutline.getPosition());
-	hpBarText.setFont(font);
-	hpBarText.setPosition(hpBarOutline.getPosition().x + GUI::p2pX(0.0052, VM), hpBarOutline.getPosition().y + GUI::p2pY(0.00925, VM));
-	hpBarText.setCharacterSize(GUI::calccharsize(VM, 80));
+	hpBar = new GUI::ProgressBar{ 0.01f,0.0185f,0.156f,0.046f,player->getAttributeComponent()->hpMax,VM,&font };
 
 }
 
@@ -75,13 +66,12 @@ PlayerGUI::PlayerGUI(Player* plyr, sf::VideoMode& vm): player{plyr}, VM{vm}
 
 PlayerGUI::~PlayerGUI()
 {
+	delete hpBar;
 }
 
 void PlayerGUI::updatehpBar()
 {
-	float percent = static_cast<float>(player->getAttributeComponent()->hp) / static_cast<float>(player->getAttributeComponent()->hpMax);
-	hpBarFill.setSize(sf::Vector2f{ hpBarMaxWidth * percent, hpBarFill.getSize().y });
-	hpBarText.setString(std::to_string(player->getAttributeComponent()->hp) + "/" + std::to_string(player->getAttributeComponent()->hpMax));
+	hpBar->update(player->getAttributeComponent()->hp);
 
 }
 
@@ -99,9 +89,7 @@ void PlayerGUI::updatelvlbar()
 
 void PlayerGUI::renderhpBar(sf::RenderTarget& target)
 {
-	target.draw(hpBarOutline);
-	target.draw(hpBarFill);
-	target.draw(hpBarText);
+	hpBar->render(target);
 
 }
 

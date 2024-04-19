@@ -120,7 +120,7 @@ void Button::render(sf::RenderTarget* target)
 }
 
 
-DropDownList::DropDownList(float x, float y, float width, float height,sf::VideoMode& vm, sf::Font& fnt, std::vector<std::string> a_list, unsigned default_idx) : font{ fnt }, show_list{ false }, keyTimeMax{ 3.f },keyTime { keyTimeMax }
+DropDownList::DropDownList(float x, float y, float width, float height, sf::VideoMode& vm, sf::Font& fnt, std::vector<std::string> a_list, unsigned default_idx) : font{ fnt }, show_list { false }, keyTimeMax{ 3.f }, keyTime{ keyTimeMax }
 {
 	unsigned counter{};
 	for (auto str : a_list) {
@@ -209,7 +209,7 @@ const bool GUI::textureSelector::getKeytime()
 	}
 	return false;
 }
-GUI::textureSelector::textureSelector(float x, float y, float width, float height, float gridSize, const sf::Texture* texSheet, sf::Font& font)
+GUI::textureSelector::textureSelector(float x, float y, float width, float height, float gridSize, const sf::Texture* texSheet, sf::Font& font) : keytime{}
 {
 	keytimeMax = 2.5f;
 	GridSize = gridSize;
@@ -233,8 +233,8 @@ GUI::textureSelector::textureSelector(float x, float y, float width, float heigh
 	selector.setOutlineThickness(1.5f);
 	active = false;
 	hidden = false;
-	textureRect.width = gridSize;
-	textureRect.height = gridSize;
+	textureRect.width = (int)gridSize;
+	textureRect.height = (int)gridSize;
 }
 
 GUI::textureSelector::~textureSelector()
@@ -287,5 +287,46 @@ void GUI::textureSelector::render(sf::RenderTarget& target)
 		if (active)
 			target.draw(selector);
 	}
+
+}
+//PROGRESS BAR ****************************************************************************
+GUI::ProgressBar::ProgressBar(float xpos, float ypos, float w, float h,int max_value, sf::VideoMode& VM,sf::Font* fnt)
+{
+	float width = GUI::p2pX(w, VM);
+	float height = GUI::p2pY(h, VM);
+	float x = GUI::p2pX(xpos, VM);
+	float y = GUI::p2pY(ypos, VM);
+	maxVal = max_value;
+	BarMaxWidth = width;
+	BarOutline.setSize(sf::Vector2f(width, height));
+	BarFill.setFillColor(sf::Color{ 250,0,20,200 });
+	BarOutline.setFillColor(sf::Color{ 100,100,100,200 });
+	BarOutline.setPosition(x, y);
+	BarFill.setSize(BarOutline.getSize());
+	BarFill.setPosition(BarOutline.getPosition());
+	if (fnt) {
+		Text.setFont(*fnt);
+		Text.setPosition(BarOutline.getPosition().x + GUI::p2pX(0.0052, VM), BarOutline.getPosition().y + GUI::p2pY(0.00925, VM));
+		Text.setCharacterSize(GUI::calccharsize(VM, 80));
+	}
+}
+
+GUI::ProgressBar::~ProgressBar()
+{
+}
+//Functions
+void ProgressBar::update(const int currentVal)
+{
+	float percent = static_cast<float>(currentVal) / static_cast<float>(maxVal);
+	BarFill.setSize(sf::Vector2f{ BarMaxWidth * percent, BarFill.getSize().y });
+	barString = std::to_string(currentVal) + " / " + std::to_string(maxVal);
+	Text.setString(barString);
+}
+
+void ProgressBar::render(sf::RenderTarget& target)
+{
+	target.draw(BarOutline);
+	target.draw(BarFill);
+	target.draw(Text);
 
 }

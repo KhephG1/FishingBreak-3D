@@ -16,7 +16,7 @@ PauseMenu::PauseMenu(sf::VideoMode& vm, sf::Font& fnt): font {fnt} , VM{vm}
 	pmenuText.setFillColor(sf::Color{ 255,255,255 });
 	pmenuText.setCharacterSize(30);
 	pmenuText.setString("PAUSED");
-	pmenuText.setPosition(container.getPosition().x + (container.getSize().x - pmenuText.getGlobalBounds().getSize().x)/2.0, container.getPosition().y + 40.f);
+	pmenuText.setPosition(container.getPosition().x + (container.getSize().x - pmenuText.getGlobalBounds().getSize().x)/2.0f, container.getPosition().y + 40.f);
 }
 
 PauseMenu::~PauseMenu()

@@ -27,6 +27,7 @@ private:
 	int to_y;
 public:
 	TileMap(float gridSize, int width, int height, std::string texture_file);
+	TileMap(const std::string file_name);
 	virtual ~TileMap();
 	void update();
 	void render(sf::RenderTarget& target, const sf::Vector2i gridPosition, const bool show_collision = false, sf::Vector2f playerPos = sf::Vector2f{}, sf::Shader* shader = nullptr);
@@ -42,5 +43,8 @@ public:
 
 	//Accessors
 	const int getLayer(const int x, const int y, const int layer) const;
+	const sf::Vector2i& getMaxSizeGrid() const;
+	const sf::Vector2f& getMaxSizeFloat() const;
+	const bool hasTile(const int x, const int y, const int z);
 };
 #endif

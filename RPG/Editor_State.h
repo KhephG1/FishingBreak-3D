@@ -20,6 +20,7 @@ private:
 	sf::RectangleShape selectorRect;
 	GUI::textureSelector* texSelector;
 	bool collision;
+	std::string tileAddLock;
 	short type;
 	sf::View MainView;
 	float camera_speed;

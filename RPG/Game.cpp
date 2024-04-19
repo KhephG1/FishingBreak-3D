@@ -38,6 +38,7 @@ void Game::initKeys()
 	supportedKeys["C"] = sf::Keyboard::Key::C;
 	supportedKeys["UP"] = sf::Keyboard::Key::Up;
 	supportedKeys["DOWN"] = sf::Keyboard::Key::Down;
+	supportedKeys["L"] = sf::Keyboard::Key::L;
 	
 
 

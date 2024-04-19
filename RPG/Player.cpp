@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Player.h"
+
 //initializer functions
 void Player::initVariables()
 {
@@ -9,22 +10,26 @@ void Player::initComponents()
 {
 
 }
+void Player::initAnimations()
+{
+	animationComponent->addAnimation("IDLE", 15.f, 0, 0, 8, 0, 64, 64);
+	animationComponent->addAnimation("WALK_DOWN", 15.f, 0, 1, 3, 1, 64, 64);
+	animationComponent->addAnimation("WALK_UP", 15.f, 12, 1, 15, 1, 64, 64);
+	animationComponent->addAnimation("WALK_LEFT", 15.f, 4, 1, 7, 1, 64, 64);
+	animationComponent->addAnimation("WALK_RIGHT", 15.f, 8, 1, 11, 1, 64, 64);
+}
 //constructors / destructors
 Player::Player(float xpos, float ypos, sf::Texture* tex_sheet) {
 	initVariables();
 	createSprite(tex_sheet);
-	setPosition(xpos, ypos);
 	sprite->setScale(1, 1);
 	createMovementComponent(100.f, 1500.f, 900.f);
 	createAnimationtComponent(*tex_sheet);
 	createHitboxComponent(*sprite,10.f,5.f,44.f,54.f);
 	createAttributeComponent(1);
-
-	animationComponent->addAnimation("IDLE", 15.f, 0, 0,8, 0, 64, 64);
-	animationComponent->addAnimation("WALK_DOWN", 15.f, 0, 1, 3, 1, 64, 64);
-	animationComponent->addAnimation("WALK_UP", 15.f, 12, 1, 15, 1, 64, 64);
-	animationComponent->addAnimation("WALK_LEFT",15.f, 4, 1, 7, 1, 64, 64);
-	animationComponent->addAnimation("WALK_RIGHT", 15.f, 8, 1, 11, 1, 64, 64);
+	createSkillComponent();
+	initAnimations();
+	setPosition(ypos, xpos);
 }
 Player::~Player()
 {
@@ -37,53 +42,27 @@ AttributeComponent* Player::getAttributeComponent()
 
 void Player::updateAnimation(const float& dt)
 {
-	/*
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-		attacking = true;
-	} 
-	if (attacking) {
-		stopVelocity();
-		if (sprite->getScale().x > 0.f) {//facing left
-			sprite->setOrigin(96.f, 0.f);
-		}
-		else {//facing right
-			sprite->setOrigin(258.f + 96.f, 0.f);
-		}
-		
-		if (animationComponent->play("ATTACK", dt, true)) {
-			sprite->setOrigin(258.f, 0.f);
-			attacking = false;
-			if (sprite->getScale().x > 0.f) {//facing left
-				sprite->setOrigin(0.f, 0.f);
-			}
-			else {//facing right
-				sprite->setOrigin(258.f, 0.f);
-			}
-		}
-		
-	}
-	*/
 	if (movementComp->getState(IDLE)) {
 		animationComponent->play("IDLE",dt);
 	}
 	else if(movementComp->getState(MOVING_LEFT)) {
-		sprite->setOrigin(0, 0);
+	
 		sprite->setScale(1, 1);
 		//the get "movementcomp->getvelocity..." arguments determine the speed at which the animation plays. If we are moving slower, the animation plays slower
 		animationComponent->play("WALK_LEFT", dt,-movementComp->getVelocity().x, movementComp->getMaxVelocity());
 	}
 	else if (movementComp->getState(MOVING_RIGHT)) {
-		//sprite->setOrigin(258.f, 0);
+	
 		sprite->setScale(1, 1);
 		animationComponent->play("WALK_RIGHT", dt, movementComp->getVelocity().x, movementComp->getMaxVelocity());
 	}
 	else if (movementComp->getState(MOVING_UP)) {
-		sprite->setOrigin(0, 0);
+		
 		sprite->setScale(1, 1);
 		animationComponent->play("WALK_UP", dt, -movementComp->getVelocity().y, movementComp->getMaxVelocity());
 	}
 	else if (movementComp->getState(MOVING_DOWN)) {
-		sprite->setOrigin(0, 0);
+	
 		sprite->setScale(1, 1);
 		animationComponent->play("WALK_DOWN", dt, movementComp->getVelocity().y, movementComp->getMaxVelocity());
 	}
@@ -95,7 +74,7 @@ void Player::updateAttack()
 }
 
 
-void Player::update(const float& dt)
+void Player::update(const float& dt, sf::Vector2f mousePosView)
 {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::E))
 		attributeComponent->gainExp(20);
@@ -103,6 +82,7 @@ void Player::update(const float& dt)
 	updateAttack();
 	updateAnimation(dt);
 	hitbox->update();
+	sword.update(mousePosView, getCenter());
 	
 }
 
@@ -113,9 +93,11 @@ void Player::render(sf::RenderTarget* target, sf::Shader* shader)
 		shader->setUniform("hasTexture", true);
 		shader->setUniform("lightPos", getCenter());
 		target->draw(*sprite, shader);
+		sword.render(*target, shader);
 	}
 	else {
 		target->draw(*sprite);
+		sword.render(*target);
 	}
 	
 	if (show_hitbox) {
@@ -126,18 +108,12 @@ void Player::render(sf::RenderTarget* target, sf::Shader* shader)
 
 void Player::loseHP(const int hp)
 {
-	attributeComponent->hp -= hp;
-	if (attributeComponent->hp < 0) {
-		attributeComponent->hp = 0;
-	}
+	attributeComponent->loseHP(hp);
 }
 
 void Player::gainHP(const int hp)
 {
-	attributeComponent->hp += hp;
-	if (attributeComponent->hp > attributeComponent->hpMax) {
-		attributeComponent->hp = attributeComponent->hpMax;
-	}
+	attributeComponent->gainHP(hp);
 }
 
 void Player::gainXP(const int xp)
@@ -147,10 +123,7 @@ void Player::gainXP(const int xp)
 
 void Player::loseXP(const int xp)
 {
-	attributeComponent->exp -= xp;
-	if (attributeComponent->exp < 0) {
-		attributeComponent->exp = 0;
-	}
+	attributeComponent->loseXP(xp);
 }
 
 void Player::hideHitbox(const bool choice)

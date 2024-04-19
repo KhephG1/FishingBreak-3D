@@ -55,16 +55,16 @@ void SettingState::initFonts()
 void SettingState::initGUI()
 {
 	sf::VideoMode& vm = State_Data->gfxSettings->resolution;
-	buttons["EXIT_STATE"] = new Button{ p2pX(0.052,vm), p2pY(0.625,vm), p2pX(0.0781,vm), p2pY(0.0462,vm),vm,"Back", &font,  sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent, sf::Color::White, sf::Color{100,100,100}, sf::Color::Blue, sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent};
+	buttons["EXIT_STATE"] = new Button{ p2pX(0.052f,vm), p2pY(0.625f,vm), p2pX(0.0781f,vm), p2pY(0.0462f,vm),vm,"Back", &font,  sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent, sf::Color::White, sf::Color{100,100,100}, sf::Color::Blue, sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent};
 
-	buttons["APPLY"] = new Button{ p2pX(0.052,vm), p2pY(0.556,vm), p2pX(0.0781,vm), p2pY(0.0462,vm),vm,"Apply", &font,  sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent, sf::Color::White, sf::Color{100,100,100}, sf::Color::Blue, sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent};
+	buttons["APPLY"] = new Button{ p2pX(0.052f,vm), p2pY(0.556f,vm), p2pX(0.0781f,vm), p2pY(0.0462f,vm),vm,"Apply", &font,  sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent, sf::Color::White, sf::Color{100,100,100}, sf::Color::Blue, sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent};
 	std::vector<std::string> a_list{ "1920x1080", "800x600", "640x480"};
 	std::vector<std::string> modes_str;
 
 	for (auto& i : modes) {
 		modes_str.push_back(std::to_string(i.width) + 'x' + std::to_string(i.height));
 	}
-	dropdownL["RESOLUTION"] = new GUI::DropDownList{ p2pX(0.156, vm), p2pY(0.556, vm), p2pX(0.104, vm), p2pY(0.046, vm),vm, font, modes_str, 0 };
+	dropdownL["RESOLUTION"] = new GUI::DropDownList{ p2pX(0.156f, vm), p2pY(0.556f, vm), p2pX(0.104f, vm), p2pY(0.046f, vm),vm, font, modes_str, 0 };
 
 
 
@@ -142,7 +142,7 @@ void SettingState::updateGUI(const float& dt)
 
 	//Text init
 	optionsText.setFont(font);
-	optionsText.setPosition(p2pX(0.052,State_Data->gfxSettings->resolution), p2pY(0.46,State_Data->gfxSettings->resolution));
+	optionsText.setPosition(p2pX(0.052f,State_Data->gfxSettings->resolution), p2pY(0.46f,State_Data->gfxSettings->resolution));
 	optionsText.setCharacterSize(28);
 	optionsText.setFillColor(sf::Color::White);
 	optionsText.setString("Resolution \nVsync \nAntialiasing \n");

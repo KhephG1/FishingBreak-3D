@@ -7,6 +7,7 @@ void Editor_State::initVariables()
 	collision = false;
 	type = DEFAULT;
 	camera_speed = 100.f;
+	tileAddLock = "FALSE";
 }
 
 void Editor_State::initBackgrounds()
@@ -18,8 +19,8 @@ void Editor_State::initPauseMenu()
 	sf::VideoMode& vm = State_Data->gfxSettings->resolution;
 	pmenu = new PauseMenu{vm, font };
 	pmenu->addButton("QUIT", "QUIT", p2pY(0.46f,vm), p2pX(0.0781f, vm), p2pY(0.042f, vm));
-	pmenu->addButton("SAVE", "SAVE", p2pY(0.65,vm), p2pX(0.0781f, vm), p2pY(0.042f, vm));
-	pmenu->addButton("LOAD", "LOAD", p2pY(0.556,vm), p2pX(0.0781f, vm), p2pY(0.042f, vm));
+	pmenu->addButton("SAVE", "SAVE", p2pY(0.65f,vm), p2pX(0.0781f, vm), p2pY(0.042f, vm));
+	pmenu->addButton("LOAD", "LOAD", p2pY(0.556f,vm), p2pX(0.0781f, vm), p2pY(0.042f, vm));
 
 }
 
@@ -92,7 +93,14 @@ void Editor_State::updateEditorInput(const float& dt)
 		}
 		else {
 			if (!sidebar.getGlobalBounds().contains(sf::Vector2f{ mousePosWindow })) {
-				map->addTile(mousePosGrid.x, mousePosGrid.y, 0, textureRect, collision, type);
+				if (tileAddLock == "TRUE") {
+					if (map->hasTile(mousePosGrid.x, mousePosGrid.y, 0)) {
+						map->addTile(mousePosGrid.x, mousePosGrid.y, 0, textureRect, collision, type);
+					}
+				}
+				else {
+					map->addTile(mousePosGrid.x, mousePosGrid.y, 0, textureRect, collision, type);
+				}
 			}
 		}
 	}
@@ -114,7 +122,16 @@ void Editor_State::updateEditorInput(const float& dt)
 		}
 	}
 	
+	//set lock on off
 
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(keybinds.at("TOGGLE_TILE_LOCK"))) && getKeyTime()) {
+		if (tileAddLock == "FALSE") {
+			tileAddLock = "TRUE";
+		}
+		else {
+			tileAddLock = "FALSE";
+		}
+	}
 }
 
 void Editor_State::initGUI()
@@ -245,7 +262,8 @@ void Editor_State::updateGUI(const float& dt)
 		<< "\n" << textureRect.left << " "
 		<< textureRect.top << "\n" << "Collision: " << collision
 		<< "\n" << "Type: " << type
-		<< "\n" << "Tiles: " << map->getLayer(mousePosGrid.x, mousePosGrid.y, layer);
+		<< "\n" << "Tiles: " << map->getLayer(mousePosGrid.x, mousePosGrid.y, layer)
+		<<"\n"<<"Tile Lock: "<<tileAddLock;
 	cursorText.setString(ss.str());
 	
 	

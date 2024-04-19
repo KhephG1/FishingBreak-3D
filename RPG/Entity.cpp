@@ -6,6 +6,7 @@ void Entity::initVariables()
 	movementComp = nullptr;
 	sprite = nullptr;
 	texture = nullptr;
+	skillComponent = nullptr;
 }
 
 Entity::Entity()
@@ -21,6 +22,7 @@ Entity::~Entity()
 	delete animationComponent;
 	delete hitbox;
 	delete attributeComponent;
+	delete skillComponent;
 }
 
 void Entity::createMovementComponent(const float maxSpeed, const float accel, const float decel)
@@ -48,6 +50,11 @@ void Entity::createSprite(sf::Texture* tex)
 	texture = tex;
 	sprite = new sf::Sprite{ *tex };
 
+}
+
+void Entity::createSkillComponent()
+{
+	skillComponent = new SkillComponent{};
 }
 
 const sf::Vector2f Entity::getPosition() const
@@ -113,12 +120,13 @@ void Entity::move(const float& dt,const float dir_x, const float dir_y)
 	else {
 		std::cout << "error" << std::endl;
 	}
+	if (skillComponent) {
+		skillComponent->gainExp(ENDURANCE, 1);
+		std::cout << skillComponent->getSkill(ENDURANCE) << std::endl;
+	}
 }
 
-void Entity::update(const float& dt)
-{
-	
-}
+
 
 void Entity::render(sf::RenderTarget* target, sf::Shader* shader)
 {

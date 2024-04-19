@@ -5,6 +5,8 @@
 #include "PauseMenu.h"
 #include "TileMap.h"
 #include "PlayerGUI.h"
+#include "Sword.h"
+#include "Bow.h"
 class GameState: public State
 {
 private:
@@ -16,6 +18,7 @@ private:
 	void initPlayers();
 	void initTileMap();
 	sf::View MainView;
+	sf::Vector2i ViewGridPosition;
 	//these variables will be used for rendering the map without tearing
 	sf::RenderTexture render_tex;
 	sf::Sprite renderSprite;
@@ -24,7 +27,6 @@ private:
 	sf::Font fnt;
 	TileMap* tMap;
 	PlayerGUI* playerGUI;
-
 	sf::Shader core_shader;
 public:
 

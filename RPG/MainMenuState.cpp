@@ -55,10 +55,10 @@ void MainMenuState::initGUI()
 	since you actually can't see active, it is left as blue
 	*/
 	sf::VideoMode& vm = State_Data->gfxSettings->resolution;
-	buttons["EXIT_STATE"] = new Button{ p2pX(0.072,vm), p2pY(0.278,vm), p2pX(0.0781,vm), p2pY(0.0416,vm),vm,"Quit", &font, sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent, sf::Color::White, sf::Color{100,100,100}, sf::Color::Blue, sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent };
-	buttons["GAME_STATE"] = new Button{ p2pX(0.187,vm),p2pY(0.278,vm),  p2pX(0.0781,vm), p2pY(0.0416,vm),vm,"New Game", &font,  sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent, sf::Color::White, sf::Color{100,100,100}, sf::Color::Blue, sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent };
-	buttons["EDITOR_STATE"] = new Button{ p2pX(0.39,vm),p2pY(0.278,vm),  p2pX(0.0781,vm), p2pY(0.0416,vm),vm,"Editor", &font,   sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent, sf::Color::White, sf::Color{100,100,100}, sf::Color::Blue, sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent };
-	buttons["SETTING_STATE"] = new Button{ p2pX(0.286,vm),p2pY(0.278,vm),  p2pX(0.0781,vm), p2pY(0.0416,vm),vm,"Setting", &font,   sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent, sf::Color::White, sf::Color{100,100,100}, sf::Color::Blue, sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent };
+	buttons["EXIT_STATE"] = new Button{ p2pX(0.072f,vm), p2pY(0.278f,vm), p2pX(0.0781f,vm), p2pY(0.0416f,vm),vm,"Quit", &font, sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent, sf::Color::White, sf::Color{100,100,100}, sf::Color::Blue, sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent };
+	buttons["GAME_STATE"] = new Button{ p2pX(0.187f,vm),p2pY(0.278f,vm),  p2pX(0.0781f,vm), p2pY(0.0416f,vm),vm,"New Game", &font,  sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent, sf::Color::White, sf::Color{100,100,100}, sf::Color::Blue, sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent };
+	buttons["EDITOR_STATE"] = new Button{ p2pX(0.39f,vm),p2pY(0.278f,vm),  p2pX(0.0781f,vm), p2pY(0.0416f,vm),vm,"Editor", &font,   sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent, sf::Color::White, sf::Color{100,100,100}, sf::Color::Blue, sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent };
+	buttons["SETTING_STATE"] = new Button{ p2pX(0.286f,vm),p2pY(0.278f,vm),  p2pX(0.0781f,vm), p2pY(0.0416f,vm),vm,"Setting", &font,   sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent, sf::Color::White, sf::Color{100,100,100}, sf::Color::Blue, sf::Color::Transparent, sf::Color::Transparent, sf::Color::Transparent };
 	//Background
 	if (!backgroundTexture.loadFromFile("Resources/Images/Backgrounds/menu_background.png")) {
 		throw std::invalid_argument{ "failed to load texture" };

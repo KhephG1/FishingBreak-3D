@@ -10,10 +10,7 @@ private:
 	sf::VideoMode& VM;
 
 	//HP
-	sf::Text hpBarText;
-	sf::RectangleShape hpBarOutline;
-	sf::RectangleShape hpBarFill;
-	float hpBarMaxWidth;
+	GUI::ProgressBar* hpBar;
 	
 
 	//EXP

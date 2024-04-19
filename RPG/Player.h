@@ -1,14 +1,17 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 #include "Entity.h"
+#include "Sword.h"
 class Player: public Entity
 {
 private:
 	bool facing_right;
 	bool attacking;
 	bool show_hitbox;
+	Sword sword;
 	void initVariables();
 	void initComponents();
+	void initAnimations();
 public:
 	Player(float xpos, float ypos, sf::Texture* tex_sheet);
 	virtual ~Player();
@@ -16,7 +19,7 @@ public:
 	//Functions
 	void updateAttack();
 	void updateAnimation(const float& dt);
-	virtual void update(const float& dt) override;
+	virtual void update(const float& dt, sf::Vector2f mousePosView) override;
 	virtual void render(sf::RenderTarget* target, sf::Shader* shader) override;
 	void loseHP(const int hp);
 	void gainHP(const int hp);

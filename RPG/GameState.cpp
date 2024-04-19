@@ -43,13 +43,14 @@ void GameState::initKeybinds()
 
 void GameState::initPlayers()
 {
-	player = new Player{ 0, 0, &textures["PLAYER_SHEET"] };
+	player = new Player{ 400, 400, &textures["PLAYER_SHEET"] };
+
 }
 
 void GameState::initTileMap()
 {
-	tMap = new TileMap{ State_Data->gridsize,100,100,"Resources/Images/Tiles/tiles.png" 
-	};
+
+	tMap = new TileMap{ State_Data->gridsize,100,100,"Resources/Images/Tiles/tiles.png" };
 	tMap->loadFromFile("text.txt");
 }
 
@@ -65,6 +66,8 @@ GameState::GameState(StateData* state_data) : State{state_data}
 	initShaders();
 	initTileMap();
 	initPlayerGUI();
+
+
 }
 
 GameState::~GameState()
@@ -103,7 +106,7 @@ void GameState::update(const float& dt)
 		*/
 		updateTileMap(dt);//checks collisions
 		if (player) {
-			player->update(dt);//moves player
+			player->update(dt,mousePosView);//moves player
 		}
 		updatePlayerGUI(dt);
 	}
@@ -124,6 +127,7 @@ void GameState::render(sf::RenderTarget* target)
 	tMap->render(render_tex, player->getGridPosition(static_cast<int>(State_Data->gridsize)),false,player->getCenter(), &core_shader);
 	if (player) {
 		player->hideHitbox(true);
+	
 		player->render(&render_tex, &core_shader);
 	}
 	tMap->DeferredRender(render_tex,player->getCenter(),&core_shader);
@@ -167,7 +171,7 @@ void GameState::updatePlayerInput(const float& dt)
 		if(getKeyTime())
 			player->loseHP(1);
 	}
-	
+
 	
 }
 
@@ -203,6 +207,7 @@ void GameState::updateTileMap(const float& dt)
 {
 	tMap->update();
 	tMap->updateCollision(player,dt);
+
 }
 
 void GameState::updatePauseButtons()
@@ -210,6 +215,7 @@ void GameState::updatePauseButtons()
 	if (pmenu->isPressed("QUIT") && getKeyTime()) {
 		endState();
 	}
+
 }
 
 void GameState::updateView(const float& dt)
@@ -219,9 +225,40 @@ void GameState::updateView(const float& dt)
 	 
 	MainView.setCenter(std::floor(player->getPosition().x +(float)(mousePosWindow.x - (float)State_Data->gfxSettings->resolution.width/2.f)/5.f ), 
 		std::floor(player->getPosition().y + (float)(mousePosWindow.y - (float)State_Data->gfxSettings->resolution.height/2.f))/2.f);
+	if (tMap->getMaxSizeFloat().x >= MainView.getSize().x)
+	{
+		if (MainView.getCenter().x - MainView.getSize().x / 2.f < 0.f)
+		{
+			MainView.setCenter(0.f + MainView.getSize().x / 2.f, MainView.getCenter().y);
+		}
+		else if (MainView.getCenter().x + MainView.getSize().x / 2.f > tMap->getMaxSizeFloat().x)
+		{
+			MainView.setCenter(this->tMap->getMaxSizeFloat().x - MainView.getSize().x / 2.f, MainView.getCenter().y);
+		}
+	}
+
+	if (this->tMap->getMaxSizeFloat().y >= MainView.getSize().y)
+	{
+		if (MainView.getCenter().y - MainView.getSize().y / 2.f < 0.f)
+		{
+			MainView.setCenter(MainView.getCenter().x, 0.f + MainView.getSize().y / 2.f);
+		}
+		else if (MainView.getCenter().y + MainView.getSize().y / 2.f > tMap->getMaxSizeFloat().y)
+		{
+			MainView.setCenter(MainView.getCenter().x, this->tMap->getMaxSizeFloat().y - MainView.getSize().y / 2.f);
+		}
+	}
+
+	ViewGridPosition.x = static_cast<int>(MainView.getCenter().x) / static_cast<int>(State_Data->gridsize);
+	ViewGridPosition.y = static_cast<int>(MainView.getCenter().y) / static_cast<int>(this->State_Data->gridsize);
 }
 
 void GameState::updatePlayerGUI(const float& dt)
 {
 	playerGUI->update(dt);
+	if (player->getPosition().x < 0 || player->getPosition().y < 0) {
+
+		std::cout << "setting position GUI" << std::endl;
+		player->setPosition(400, 400);
+	}
 }

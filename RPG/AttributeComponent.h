@@ -32,6 +32,9 @@ public:
 	void updateLvl();
 	void update();
 	void gainExp(const unsigned ex);
+	void gainHP(const int hp);
+	void loseHP(const int hp);
+	void loseXP(const int xp);
 	std::string debugPrint()const;
 };
 

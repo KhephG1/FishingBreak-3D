@@ -2,20 +2,22 @@
 #include "TileMap.h"
 void TileMap::clear()
 {
-	for (int x = 0; x < maxSizeGrid.x; x++) {
-		for (int y{}; y < maxSizeGrid.y; y++) {
-			for (int z{}; z < layers; z++) {
-				for (int k = 0; k < (int)tMap.at(x).at(y).at(z).size(); k++) {
-					delete tMap.at(x).at(y).at(z).at(k);
-					tMap.at(x).at(y).at(z).at(k) = nullptr;
+	
+		for (int x = 0; x < maxSizeGrid.x; x++) {
+			for (int y{}; y < maxSizeGrid.y; y++) {
+				for (int z{}; z < layers; z++) {
+					for (int k = 0; k < (int)tMap.at(x).at(y).at(z).size(); k++) {
+						delete tMap.at(x).at(y).at(z).at(k);
+						tMap.at(x).at(y).at(z).at(k) = nullptr;
+					}
+					tMap.at(x).at(y).at(z).clear();
 				}
-				tMap.at(x).at(y).at(z).clear();
+				tMap.at(x).at(y).clear();
 			}
-			tMap.at(x).at(y).clear();
+			tMap.at(x).clear();
 		}
-		tMap.at(x).clear();
-	}
-	tMap.clear();
+		tMap.clear();
+	
 }
 TileMap::TileMap(float gridSize, int width, int height, std::string texture_file) {
 	gridSizeI = (int)gridSize;
@@ -43,7 +45,7 @@ TileMap::TileMap(float gridSize, int width, int height, std::string texture_file
 		throw std::runtime_error{ "ERROR" };
 	}
 
-	collision_box.setSize(sf::Vector2f{ gridSize, gridSize });
+	collision_box.setSize(sf::Vector2f{ gridSizeF, gridSizeF });
 	collision_box.setFillColor(sf::Color(sf::Color::Transparent));
 	collision_box.setOutlineThickness(1.f);
 	collision_box.setOutlineColor(sf::Color::Red);
@@ -52,6 +54,21 @@ TileMap::TileMap(float gridSize, int width, int height, std::string texture_file
 	from_y = 0;
 	to_x = 0;
 	to_y = 0;
+}
+
+TileMap::TileMap(const std::string file_name)
+{
+
+	from_x = 0;
+	from_y = 0;
+	to_x = 0;
+	to_y = 0;
+	layers = 1;
+	loadFromFile(file_name);
+	collision_box.setSize(sf::Vector2f{ gridSizeF, gridSizeF });
+	collision_box.setFillColor(sf::Color(sf::Color::Transparent));
+	collision_box.setOutlineThickness(1.f);
+	collision_box.setOutlineColor(sf::Color::Red);
 }
 
 TileMap::~TileMap()
@@ -92,8 +109,12 @@ void TileMap::render(sf::RenderTarget& target, const sf::Vector2i gridPosition, 
 					deferredRenderTiles.push(tMap.at(x).at(y).at(layer).at(k));
 				}
 				else {
-					if(shader)
-						tMap.at(x).at(y).at(layer).at(k)->render(target,playerPos,shader);
+					if (shader) {
+						tMap.at(x).at(y).at(layer).at(k)->render(target, playerPos, shader);
+					}
+					else {
+						tMap.at(x).at(y).at(layer).at(k)->render(target);
+					}
 				}
 				if(show_collision){
 					if (tMap.at(x).at(y).at(layer).at(k)->getCollision()) {
@@ -114,7 +135,7 @@ void TileMap::DeferredRender(sf::RenderTarget& target,sf::Vector2f playerPos, sf
 			deferredRenderTiles.top()->render(target, playerPos, shader);
 		}
 		else {
-			deferredRenderTiles.top()->render(target, playerPos);
+			deferredRenderTiles.top()->render(target);
 		}
 		deferredRenderTiles.pop();
 	}
@@ -197,13 +218,12 @@ void TileMap::loadFromFile(const std::string file_name)
 		int trX, trY = 0;
 		bool collision{ false };
 		short type{ DEFAULT };
-
 		//Basics
 		in_file >> size.x >> size.y >> gridSize >> layers>>tex_file;
-
+		maxWorldSize.x = static_cast<float>(size.x) * gridSize;
+		maxWorldSize.y = static_cast<float>(size.y) * gridSize;
 		clear();
-
-		tMap.reserve(maxSizeGrid.x);
+			tMap.reserve(maxSizeGrid.x);
 		for (int x = 0; x < maxSizeGrid.x; x++) {
 			tMap.push_back(std::vector<std::vector<std::vector<Tile*>>> {});
 			for (int y{}; y < maxSizeGrid.y; y++) {
@@ -216,7 +236,7 @@ void TileMap::loadFromFile(const std::string file_name)
 			}
 		}
 		if (!tileSheet.loadFromFile(tex_file)) {
-			throw std::runtime_error{ "ERROR" };
+			std::cout << "had an oopsie" << std::endl;
 		}
 
 		while (in_file>> x >> y >> z>>trX>>trY>>collision>>type) {
@@ -241,6 +261,8 @@ void TileMap::updateCollision(Entity* entity, const float& dt)
 		entity->setPosition(0.f, entity->getPosition().y);
 		entity->stopVelocityX();
 	}else if (entity->getPosition().x + entity->getGlobalBounds().width > maxWorldSize.x) {
+		std::cout << "setting position" << std::endl;
+		std::cout << maxWorldSize.x<<" "<<maxWorldSize.y << std::endl;
 		entity->setPosition(maxWorldSize.x - entity->getGlobalBounds().width, entity->getPosition().y);
 		entity->stopVelocityX();
 	}
@@ -342,5 +364,22 @@ const int TileMap::getLayer(const int x, const int y, const int layer) const
 	return -1;
 	//throw std::invalid_argument{ "TileMap::getLayer ERROR" };
 
+}
+
+const sf::Vector2i& TileMap::getMaxSizeGrid() const
+{
+	return maxSizeGrid;
+}
+
+const sf::Vector2f& TileMap::getMaxSizeFloat() const
+{
+	return maxWorldSize;
+}
+
+const bool TileMap::hasTile(const int x, const int y, const int z){
+	if (x > 0 && x < maxWorldSize.x && y >= 0 && y < maxWorldSize.y && z < layers) {
+		return tMap.at(x).at(y).at(z).empty();
+	}
+	return false;
 }
 

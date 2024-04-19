@@ -4,6 +4,7 @@
 #include "AnimationComponent.h"
 #include "HitboxComponent.h"
 #include "AttributeComponent.h"
+#include "SkillComponent.h"
 class Entity
 {
 private:
@@ -17,6 +18,7 @@ protected:
 	MovementComponent* movementComp;
 	HitboxComponent* hitbox;
 	AttributeComponent* attributeComponent;
+	SkillComponent* skillComponent;
 	friend class GameState;
 public:
 	sf::Sprite* sprite;
@@ -28,6 +30,7 @@ public:
 	void createHitboxComponent(sf::Sprite& sprite, float offset_x, float offset_y, float width, float height);
 	void createAttributeComponent(const int lvl);
 	void createSprite(sf::Texture* texture);
+	void createSkillComponent();
 	//Accessors
 	virtual const sf::Vector2f getPosition() const;
 	//returns the dimensions  (width and height) of the hitbox
@@ -39,7 +42,7 @@ public:
 	//Functions
 	virtual void setPosition(const float x, const float y);
 	virtual void move(const float& dt,const float x, const float y);
-	virtual void update(const float& dt) = 0;
+	virtual void update(const float& dt, sf::Vector2f mousePosView) = 0;
 	virtual void render(sf::RenderTarget* target, sf::Shader* shader) = 0;
 	virtual void stopVelocity();
 	virtual void stopVelocityX();
