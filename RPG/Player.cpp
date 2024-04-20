@@ -86,12 +86,12 @@ void Player::update(const float& dt, sf::Vector2f mousePosView)
 	
 }
 
-void Player::render(sf::RenderTarget* target, sf::Shader* shader)
+void Player::render(sf::RenderTarget* target, sf::Shader* shader, const bool show_hitbox, sf::Vector2f light_position)
 {
 	//find the uniform hasTexture and set it to true
 	if (shader) {
 		shader->setUniform("hasTexture", true);
-		shader->setUniform("lightPos", getCenter());
+		shader->setUniform("lightPos", light_position);
 		target->draw(*sprite, shader);
 		sword.render(*target, shader);
 	}

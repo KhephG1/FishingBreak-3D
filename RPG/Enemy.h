@@ -16,7 +16,7 @@ public:
 	Enemy(EnemySpawner& enemySpawner,float xpos, float ypos, sf::Texture* tex_sheet);
 	virtual ~Enemy();
 
-	void render(sf::RenderTarget* target, sf::Shader* shader);
+	void render(sf::RenderTarget* target, sf::Shader* shader, const bool show_hitbox, const sf::Vector2f light_position = sf::Vector2f{});
 	void update(const float& dt, sf::Vector2f mousePosView);
 	void updateAnimation(const float& dt);
 };

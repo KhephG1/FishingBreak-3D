@@ -3,9 +3,9 @@
 void TileMap::clear()
 {
 	
-		for (int x = 0; x < maxSizeGrid.x; x++) {
-			for (int y{}; y < maxSizeGrid.y; y++) {
-				for (int z{}; z < layers; z++) {
+		for (int x = 0; x < tMap.size(); x++) {
+			for (int y{}; y < tMap.at(x).size(); y++) {
+				for (int z{}; z < tMap.at(x).at(y).size(); z++) {
 					for (int k = 0; k < (int)tMap.at(x).at(y).at(z).size(); k++) {
 						delete tMap.at(x).at(y).at(z).at(k);
 						tMap.at(x).at(y).at(z).at(k) = nullptr;

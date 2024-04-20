@@ -43,7 +43,7 @@ public:
 	virtual void setPosition(const float x, const float y);
 	virtual void move(const float& dt,const float x, const float y);
 	virtual void update(const float& dt, sf::Vector2f mousePosView) = 0;
-	virtual void render(sf::RenderTarget* target, sf::Shader* shader) = 0;
+	virtual void render(sf::RenderTarget* target, sf::Shader* shader, const bool show_hitbox = false, sf::Vector2f light_position = sf::Vector2f{}) = 0;
 	virtual void stopVelocity();
 	virtual void stopVelocityX();
 	virtual void stopVelocityY();

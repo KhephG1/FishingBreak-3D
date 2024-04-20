@@ -20,7 +20,7 @@ public:
 	void updateAttack();
 	void updateAnimation(const float& dt);
 	virtual void update(const float& dt, sf::Vector2f mousePosView) override;
-	virtual void render(sf::RenderTarget* target, sf::Shader* shader) override;
+	virtual void render(sf::RenderTarget* target, sf::Shader* shader, const bool show_hitbox = false, sf::Vector2f light_position = sf::Vector2f{}) override;
 	void loseHP(const int hp);
 	void gainHP(const int hp);
 	void gainXP(const int xp);

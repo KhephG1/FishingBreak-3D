@@ -145,6 +145,7 @@
     <ClCompile Include="AnimationComponent.cpp" />
     <ClCompile Include="AttributeComponent.cpp" />
     <ClCompile Include="Bow.cpp" />
+    <ClCompile Include="DefaultMode.cpp" />
     <ClCompile Include="EditorMode.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="EnemySpawner.cpp" />
@@ -180,6 +181,7 @@
     <ClInclude Include="AnimationComponent.h" />
     <ClInclude Include="AttributeComponent.h" />
     <ClInclude Include="Bow.h" />
+    <ClInclude Include="DefaultMode.h" />
     <ClInclude Include="EditorMode.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="EnemySpawner.h" />

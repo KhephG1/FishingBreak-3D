@@ -3,17 +3,26 @@
 
 void Editor_State::initVariables()
 {
-	textureRect = sf::IntRect{ 0,0,(int)State_Data->gridsize, (int)State_Data->gridsize };
-	collision = false;
-	type = DEFAULT;
-	camera_speed = 100.f;
-	tileAddLock = "FALSE";
+	camera_speed = 1000.f;
 }
 
-void Editor_State::initBackgrounds()
+void Editor_State::initEditorStateData()
 {
+	EditorStatedata.keybinds = &keybinds;
+	EditorStatedata.view = &MainView;
+	EditorStatedata.font = &font;
+	EditorStatedata.keyTime = &keyTime;
+	EditorStatedata.keyTimeMax = &keyTimeMax;
+	EditorStatedata.mousePosGrid = &mousePosGrid;
+	EditorStatedata.mousePosScreen= &mousePosScreen;
+	EditorStatedata.mousePosView = &mousePosView;
+	EditorStatedata.mousePosWindow = &mousePosWindow;
 	
+
+
 }
+
+
 void Editor_State::initPauseMenu()
 {
 	sf::VideoMode& vm = State_Data->gfxSettings->resolution;
@@ -50,13 +59,6 @@ void Editor_State::initFonts()
 	}
 }
 
-void Editor_State::initText()
-{
-	cursorText.setPosition(mousePosView.x, mousePosView.y - 50.f);
-	cursorText.setFont(font);
-	cursorText.setCharacterSize(12);
-	cursorText.setString(std::to_string(mousePosView.x) + "," + std::to_string(mousePosView.y) + " " + std::to_string(textureRect.left));
-}
 
 void Editor_State::initButtons()
 {
@@ -84,69 +86,12 @@ void Editor_State::updateEditorInput(const float& dt)
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(keybinds.at("MOVE_CAM_LEFT")))) {
 		MainView.move(-camera_speed * dt, 0.f);
 	}
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Left)&& getKeyTime()) {
-		if (buttons["HIDE"]->isPressed()) {
-			texSelector->gethidden() = !texSelector->gethidden();
-		}
-		if (texSelector->getActive()) {
-			textureRect = texSelector->getTextureRect();
-		}
-		else {
-			if (!sidebar.getGlobalBounds().contains(sf::Vector2f{ mousePosWindow })) {
-				if (tileAddLock == "TRUE") {
-					if (map->hasTile(mousePosGrid.x, mousePosGrid.y, 0)) {
-						map->addTile(mousePosGrid.x, mousePosGrid.y, 0, textureRect, collision, type);
-					}
-				}
-				else {
-					map->addTile(mousePosGrid.x, mousePosGrid.y, 0, textureRect, collision, type);
-				}
-			}
-		}
-	}
-	else if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && getKeyTime()) {
-		if(!texSelector->getActive()&& !sidebar.getGlobalBounds().contains(sf::Vector2f{ mousePosWindow })){
-			map->removeTile(mousePosGrid.x, mousePosGrid.y,0);
-		}
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(keybinds.at("TOGGLE_COLLISION"))) && getKeyTime()) {
-		collision = !collision;
-	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(keybinds.at("TYPE_INC"))) && getKeyTime()) {
-		//increase if less than max type number
-		type++;
-	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(keybinds.at("TYPE_DEC"))) && getKeyTime()) {
-		if (type > 0) {
-			type--;
-		}
-	}
 	
-	//set lock on off
-
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(keybinds.at("TOGGLE_TILE_LOCK"))) && getKeyTime()) {
-		if (tileAddLock == "FALSE") {
-			tileAddLock = "TRUE";
-		}
-		else {
-			tileAddLock = "FALSE";
-		}
-	}
 }
 
 void Editor_State::initGUI()
 {
-	selectorRect.setSize(sf::Vector2f{ State_Data->gridsize, State_Data->gridsize });
-	selectorRect.setFillColor(sf::Color(255,255,255,150));
-	selectorRect.setOutlineThickness(1.f);
-	selectorRect.setOutlineColor(sf::Color::Green);
-	selectorRect.setTexture(map->getileSheet());
-	selectorRect.setTextureRect(textureRect);
-	texSelector = new GUI::textureSelector{0,0,800.f,500.f,State_Data->gridsize, map->getileSheet(), font};
-	sidebar.setSize(sf::Vector2f{ (float)State_Data->gfxSettings->resolution.width,80.f });
-	sidebar.setPosition(0, State_Data->gfxSettings->resolution.height - sidebar.getSize().y);
-	sidebar.setFillColor(sf::Color{ 50,50,50,100 });
-	sidebar.setOutlineThickness(1.f);
+
 }
 
 void Editor_State::initView()
@@ -155,18 +100,23 @@ void Editor_State::initView()
 	MainView.setCenter(State_Data->gfxSettings->resolution.width / 2.f, State_Data->gfxSettings->resolution.height / 2.f);
 }
 
+void Editor_State::initModes()
+{
+	editor_modes.push_back(new DefaultMode{ State_Data, map,&EditorStatedata });
+}
+
 Editor_State::Editor_State(StateData* State_Data) : State{ State_Data }
 {
 	initVariables();
-	initBackgrounds();
+	initEditorStateData();
 	initKeybinds();
 	initFonts();
-	initText();
 	initButtons();
 	initPauseMenu();
 	initTileMap();
 	initView();
 	initGUI();
+	initModes();
 
 }
 
@@ -177,7 +127,12 @@ Editor_State::~Editor_State()
 	}
 	delete pmenu;
 	delete map;
-	delete texSelector;
+	
+	for (size_t i = 0; i < editor_modes.size(); i++) {
+		delete editor_modes.at(i);
+	}
+	
+	
 }
 
 void Editor_State::update(const float& dt)
@@ -189,6 +144,7 @@ void Editor_State::update(const float& dt)
 		updateButtons();
 		updateGUI(dt);
 		updateEditorInput(dt);
+		updateModes(dt);
 	}
 	else {
 		pmenu->update(mousePosWindow);
@@ -201,7 +157,6 @@ void Editor_State::render(sf::RenderTarget* target)
 	if (!target) {
 		target = window;
 	}
-	target->draw(background);
 	target->setView(MainView);
 	map->render(*target, mousePosGrid, true);
 	map->DeferredRender(*target);
@@ -209,7 +164,7 @@ void Editor_State::render(sf::RenderTarget* target)
 	renderButtons(target);
 
 	renderGUI(*target);
-
+	renderModes(*target);
 	if (paused) { //paused menu rendering
 		target->setView(window->getDefaultView());
 		pmenu->render(*target);
@@ -243,6 +198,16 @@ void Editor_State::updatePauseMenuButtons()
 	}
 }
 
+void Editor_State::updateModes(const float& dt)
+{
+	editor_modes[DEFAULT_MODE]->update(dt);
+}
+
+void Editor_State::renderModes(sf::RenderTarget& target)
+{
+	editor_modes[DEFAULT_MODE]->render(target);
+}
+
 void Editor_State::updateButtons()
 {
 	for (auto& it : buttons) {
@@ -252,23 +217,7 @@ void Editor_State::updateButtons()
 
 void Editor_State::updateGUI(const float& dt)
 {
-	if (!texSelector->getActive()) {
-		selectorRect.setTextureRect(textureRect);
-		selectorRect.setPosition(mousePosGrid.x * State_Data->gridsize, mousePosGrid.y * State_Data->gridsize);
-	}
-	cursorText.setPosition(mousePosView.x + 100.f, mousePosView.y - 50.f);
-	std::stringstream ss;
-	ss << mousePosView.x << " " << mousePosView.y << "\n " << mousePosGrid.x << mousePosGrid.y
-		<< "\n" << textureRect.left << " "
-		<< textureRect.top << "\n" << "Collision: " << collision
-		<< "\n" << "Type: " << type
-		<< "\n" << "Tiles: " << map->getLayer(mousePosGrid.x, mousePosGrid.y, layer)
-		<<"\n"<<"Tile Lock: "<<tileAddLock;
-	cursorText.setString(ss.str());
 	
-	
-
-	texSelector->update(sf::Vector2i{(int)mousePosWindow.x, (int)mousePosWindow.y}, dt);
 }
 
 void Editor_State::renderButtons(sf::RenderTarget* target)
@@ -281,13 +230,5 @@ void Editor_State::renderButtons(sf::RenderTarget* target)
 
 void Editor_State::renderGUI(sf::RenderTarget& target)
 {
-	if (!texSelector->getActive()) {
-		target.setView(MainView);
-		target.draw(selectorRect);
-	}
-	target.setView(window->getDefaultView());
-	texSelector->render(target);
-	target.draw(sidebar);
-	target.setView(MainView);
-	target.draw(cursorText);
+
 }

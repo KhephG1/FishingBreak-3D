@@ -127,12 +127,6 @@ void Entity::move(const float& dt,const float dir_x, const float dir_y)
 }
 
 
-
-void Entity::render(sf::RenderTarget* target, sf::Shader* shader)
-{
-
-}
-
 void Entity::stopVelocity()
 {
 	movementComp->stopVelocity();

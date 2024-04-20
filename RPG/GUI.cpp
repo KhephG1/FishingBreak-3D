@@ -318,6 +318,9 @@ GUI::ProgressBar::~ProgressBar()
 void ProgressBar::update(const int currentVal)
 {
 	float percent = static_cast<float>(currentVal) / static_cast<float>(maxVal);
+	if (percent > 1) {
+		percent = 1;
+	}
 	BarFill.setSize(sf::Vector2f{ BarMaxWidth * percent, BarFill.getSize().y });
 	barString = std::to_string(currentVal) + " / " + std::to_string(maxVal);
 	Text.setString(barString);

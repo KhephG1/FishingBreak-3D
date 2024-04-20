@@ -3,6 +3,7 @@
 #include "Entity.h"
 #include "Player.h"
 #include "GraphicsSettings.h"
+
 class State;
 
 class StateData {

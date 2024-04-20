@@ -129,7 +129,7 @@ void GameState::render(sf::RenderTarget* target)
 	if (player) {
 		player->hideHitbox(true);
 	
-		player->render(&render_tex, &core_shader);
+		player->render(&render_tex, &core_shader, false, player->getCenter());
 	}
 	tMap->DeferredRender(render_tex,player->getCenter(),&core_shader);
 	//begin rendering gui using the default view (not dependant on where we are in map)

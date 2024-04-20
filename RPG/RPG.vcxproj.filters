@@ -121,6 +121,9 @@
       <Filter>Map</Filter>
     </ClCompile>
     <ClCompile Include="EditorMode.cpp">
+      <Filter>States\EditorModes</Filter>
+    </ClCompile>
+    <ClCompile Include="DefaultMode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -207,6 +210,9 @@
       <Filter>Map</Filter>
     </ClInclude>
     <ClInclude Include="EditorMode.h">
+      <Filter>States\EditorModes</Filter>
+    </ClInclude>
+    <ClInclude Include="DefaultMode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
