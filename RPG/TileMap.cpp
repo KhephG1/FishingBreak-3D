@@ -119,6 +119,10 @@ void TileMap::render(sf::RenderTarget& target, const sf::Vector2i gridPosition, 
 						target.draw(collision_box);
 					}
 				}
+				if (tMap.at(x).at(y).at(layer).at(k)->getType() == TileTypes::ENEMYSPAWNER) {
+					collision_box.setPosition(tMap.at(x).at(y).at(layer).at(k)->getPosition());
+					target.draw(collision_box);
+				}
 			}
 		}
 	}
@@ -142,59 +146,88 @@ void TileMap::addTile(const int x, const int y, const int z, const sf::IntRect t
 {
 	//Takes 2 indices from the mouse position in the grid and adds a tile to that position
 	if (x < maxSizeGrid.x && y < maxSizeGrid.y && z<layers && x >=0 && y>=0 && z>=0) {
-		std::cout << "adding tile" << std::endl;
-			tMap.at(x).at(y).at(z).push_back(new Tile(x, y, gridSizeF, tileSheet, texture_rect, collision, type));
+		
+		if (type == TileTypes::DEFAULT) {
+			tMap.at(x).at(y).at(z).push_back(new RegularTile(type, x, y, gridSizeF, tileSheet, texture_rect, collision));
+		}
+		else if (type == TileTypes::ENEMYSPAWNER) {
+			tMap.at(x).at(y).at(z).push_back(new EnemySpawner(x, y, gridSizeF, tileSheet, texture_rect,0,0,0,0));
+		}
 		
 	}
 }
 
-void TileMap::removeTile(const int x, const int y, const int z)
+void TileMap::removeTile(const int x, const int y, const int z, const int type)
 {
 	if (x < maxSizeGrid.x && y < maxSizeGrid.y && z < layers && x >= 0 && y >= 0 && z >= 0) {
 		if (!tMap.at(x).at(y).at(z).empty()) { // if the tile at this index is empty, we can remove a tile
-			delete tMap.at(x).at(y).at(z).at(tMap.at(x).at(y).at(z).size() -1);
-			tMap.at(x).at(y).at(z).pop_back();
+			if (type > 0) {
+				if (tMap.at(x).at(y).at(z).back()->getType() == type) {
+					delete tMap.at(x).at(y).at(z).at(tMap.at(x).at(y).at(z).size() - 1);
+					tMap.at(x).at(y).at(z).pop_back();
+				}
+			}
+			else {
+				delete tMap.at(x).at(y).at(z).at(tMap.at(x).at(y).at(z).size() - 1);
+				tMap.at(x).at(y).at(z).pop_back();
+			}
 		}
 	}
 }
 //saves the current game map being designed to a text file
 void TileMap::saveToFile(const std::string file_name)
 {
-	/*
+	/*Saves the entire tilemap to a text-file.
 	Format:
-	Map:
-		Size x,y
-		gridSize
-		layers
-		texture file name
-	Tiles:
-		gridPos x,y,layer(z) Texture rectangle x,y,collision component, type of tile
+	Basic:
+	Size x y
+	gridSize
+	layers
+	texture file
+
+	All tiles:
+	type
+	gridPos x y layer
+	Texture rect x y
+	collision
+	tile_specific...
 	*/
 
 	std::ofstream out_file;
 
 	out_file.open(file_name);
-	if (out_file.is_open()) {
-		out_file << maxSizeGrid.x << " " << maxSizeGrid.y << std::endl
-			<< gridSizeI << std::endl
-			<< layers << std::endl
-			<< textureFile << std::endl;
 
-		for (int x = 0; x < maxSizeGrid.x; x++) {
-			for (int y{}; y < maxSizeGrid.y; y++) {
-				for (int z{}; z < layers; z++) {
-					if (!tMap.at(x).at(y).at(z).empty()) {
-						for (int i = 0; i < (int)tMap.at(x).at(y).at(z).size(); i++) {
-							out_file << x << " " << y << " " << z << " " << *tMap.at(x).at(y).at(z).at(i) << " ";
+	if (out_file.is_open())
+	{
+		out_file<< this->maxSizeGrid.x << " " << this->maxSizeGrid.y << "\n"
+			<<gridSizeI << "\n"
+			<< layers << "\n"
+			<< textureFile << "\n";
+
+		for (int x = 0; x < maxSizeGrid.x; x++)
+		{
+			for (int y = 0; y < maxSizeGrid.y; y++)
+			{
+				for (int z = 0; z < this->layers; z++)
+				{
+					if (!this->tMap[x][y][z].empty())
+					{
+						for (size_t k = 0; k < this->tMap[x][y][z].size(); k++)
+						{
+							out_file << x << " " << y << " " << z << " " <<
+								this->tMap[x][y][z][k]->getAsString()
+								<< " ";
 						}
 					}
 				}
 			}
 		}
 	}
-	else {
-		throw std::runtime_error{ "error saving the tile map" };
+	else
+	{
+		std::cout << "ERROR::TILEMAP::COULD NOT SAVE TO FILE::FILENAME: " << file_name << "\n";
 	}
+
 	out_file.close();
 }
 //loads a premade game map from a text file
@@ -204,47 +237,105 @@ void TileMap::loadFromFile(const std::string file_name)
 	std::ifstream in_file;
 
 	in_file.open(file_name);
-	if (in_file.is_open()) {
-		sf::Vector2u size;
+
+	if (in_file.is_open())
+	{
+		sf::Vector2i size;
 		int gridSize = 0;
 		int layers = 0;
-		std::string tex_file{};
-		//z is the layer
-		int x, y, z = 0;
-		//texture rect position
-		int trX, trY = 0;
-		bool collision{ false };
-		short type{ DEFAULT };
+		std::string texture_file = "";
+		int x = 0;
+		int y = 0;
+		int z = 0;
+		int trX = 0;
+		int trY = 0;
+		bool collision = false;
+		short type = 0;
+
 		//Basics
-		in_file >> size.x >> size.y >> gridSize >> layers>>tex_file;
-		maxWorldSize.x = static_cast<float>(size.x) * gridSize;
-		maxWorldSize.y = static_cast<float>(size.y) * gridSize;
+		in_file >> size.x >> size.y >> gridSize >> layers >> texture_file;
+
+		//Tiles
+		gridSizeF = static_cast<float>(gridSize);
+		gridSizeI = gridSize;
+		maxSizeGrid.x = size.x;
+		maxSizeGrid.y = size.y;
+		maxWorldSize.x = static_cast<float>(size.x * gridSize);
+		maxWorldSize.y = static_cast<float>(size.y * gridSize);
+		this->layers = layers;
+		textureFile = texture_file;
+
 		clear();
-			tMap.reserve(maxSizeGrid.x);
-		for (int x = 0; x < maxSizeGrid.x; x++) {
-			tMap.push_back(std::vector<std::vector<std::vector<Tile*>>> {});
-			for (int y{}; y < maxSizeGrid.y; y++) {
-				tMap.reserve(maxSizeGrid.y);
-				tMap.at(x).push_back(std::vector<std::vector<Tile*>>{});
-				for (int z{}; z < layers; z++) {
-					tMap.at(x).at(y).reserve(layers);
-					tMap.at(x).at(y).push_back(std::vector<Tile*>{});
+
+		tMap.resize(maxSizeGrid.x, std::vector< std::vector< std::vector<Tile*> > >());
+		for (int x = 0; x < maxSizeGrid.x; x++)
+		{
+			for (int y = 0; y < maxSizeGrid.y; y++)
+			{
+				this->tMap[x].resize(maxSizeGrid.y, std::vector< std::vector<Tile*> >());
+
+				for (int z = 0; z < layers; z++)
+				{
+					this->tMap[x][y].resize(layers, std::vector<Tile*>());
 				}
 			}
 		}
-		if (!tileSheet.loadFromFile(tex_file)) {
-			std::cout << "had an oopsie" << std::endl;
-		}
 
-		while (in_file>> x >> y >> z>>trX>>trY>>collision>>type) {
-			tMap.at(x).at(y).at(z).push_back(new Tile{ x, y, gridSizeF, tileSheet, sf::IntRect{(int)trX, (int)trY, gridSizeI, gridSizeI}, collision,type });
+		if (!tileSheet.loadFromFile(texture_file))
+			std::cout << "ERROR::TILEMAP::FAILED TO LOAD TILETEXTURESHEET::FILENAME: " << texture_file << "\n";
+
+		//Load all tiles
+		while (in_file >> x >> y >> z >> type)
+		{
+			std::cout << type << "\n";
+			if (type == TileTypes::ENEMYSPAWNER)
+			{
+				//amount, time, max dist
+				int enemy_type = 0;
+				int	enemy_am = 0;
+				int	enemy_tts = 0;
+				int	enemy_md = 0;
+
+				in_file >> trX >> trY >> enemy_type >> enemy_am >> enemy_tts >> enemy_md;
+
+				tMap[x][y][z].push_back(
+					new EnemySpawner(
+						x, y,
+						gridSizeF,
+						tileSheet,
+						sf::IntRect(trX, trY, gridSizeI, gridSizeI),
+						enemy_type,
+						enemy_am,
+						enemy_tts,
+						enemy_md
+					)
+				);
+			}
+			else
+			{
+				in_file >> trX >> trY >> collision;
+
+				this->tMap[x][y][z].push_back(
+					new RegularTile(
+						type,
+						x, y,
+						gridSizeF,
+						tileSheet,
+						sf::IntRect(trX, trY, gridSizeI, gridSizeI),
+						collision
+					)
+				);
+			}
 		}
 	}
-	else {
-		throw std::runtime_error{ "error loading the tile map" };
+	else
+	{
+		std::cout << "ERROR::TILEMAP::COULD NOT LOAD FROM FILE::FILENAME: " << file_name << "\n";
 	}
+
 	in_file.close();
 }
+
 
 const sf::Texture* TileMap::getileSheet() const
 {
@@ -258,7 +349,7 @@ void TileMap::update(Entity* entity, const float& dt)
 		entity->setPosition(0.f, entity->getPosition().y);
 		entity->stopVelocityX();
 	}else if (entity->getPosition().x + entity->getGlobalBounds().width > maxWorldSize.x) {
-		std::cout << "setting position" << std::endl;
+
 		std::cout << maxWorldSize.x<<" "<<maxWorldSize.y << std::endl;
 		entity->setPosition(maxWorldSize.x - entity->getGlobalBounds().width, entity->getPosition().y);
 		entity->stopVelocityX();
@@ -374,9 +465,15 @@ const sf::Vector2f& TileMap::getMaxSizeFloat() const
 	return maxWorldSize;
 }
 
+const bool TileMap::checkType(const int type, const int x, const int y, const int z) const
+{
+	return tMap.at(x).at(y).at(0).back()->getType() == type;
+
+}
+
 const bool TileMap::hasTile(const int x, const int y, const int z){
 	if (x > 0 && x < maxWorldSize.x && y >= 0 && y < maxWorldSize.y && z < layers) {
-		return tMap.at(x).at(y).at(z).empty();
+		return !tMap.at(x).at(y).at(z).empty();
 	}
 	return false;
 }

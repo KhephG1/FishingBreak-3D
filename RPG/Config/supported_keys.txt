@@ -7,3 +7,5 @@ W 22
 Escape 36
 Up 73
 Down 74
+PageUp 61
+PageDown 62

@@ -86,6 +86,19 @@ void Editor_State::updateEditorInput(const float& dt)
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(keybinds.at("MOVE_CAM_LEFT")))) {
 		MainView.move(-camera_speed * dt, 0.f);
 	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(keybinds.at("MODE_UP")))) {
+		if (activeMode < editor_modes.size() - 1) {
+			activeMode++;
+		}
+		else {
+			std::cout << "EDITORSTATE::CANNOTCHANGEMODE";
+		}
+	}
+	else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key(keybinds.at("MODE_DOWN")))){
+		if (activeMode > 0) {
+			activeMode--;
+		}
+	}
 	
 }
 
@@ -103,6 +116,8 @@ void Editor_State::initView()
 void Editor_State::initModes()
 {
 	editor_modes.push_back(new DefaultMode{ State_Data, map,&EditorStatedata });
+	editor_modes.push_back(new EnemyEditorMode{ State_Data,map,&EditorStatedata });
+	activeMode = DEFAULT_MODE;
 }
 
 Editor_State::Editor_State(StateData* State_Data) : State{ State_Data }
@@ -200,12 +215,12 @@ void Editor_State::updatePauseMenuButtons()
 
 void Editor_State::updateModes(const float& dt)
 {
-	editor_modes[DEFAULT_MODE]->update(dt);
+	editor_modes[activeMode]->update(dt);
 }
 
 void Editor_State::renderModes(sf::RenderTarget& target)
 {
-	editor_modes[DEFAULT_MODE]->render(target);
+	editor_modes[activeMode]->render(target);
 }
 
 void Editor_State::updateButtons()

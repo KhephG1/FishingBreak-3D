@@ -7,7 +7,8 @@
 #include "PlayerGUI.h"
 #include "Sword.h"
 #include "Bow.h"
-#include "Enemy.h"
+#include "EnemyFiles.h"
+
 class GameState: public State
 {
 private:
@@ -30,6 +31,7 @@ private:
 	TileMap* tMap;
 	PlayerGUI* playerGUI;
 	sf::Shader core_shader;
+	std::vector<Enemy*> activeEnemies;
 public:
 
 	GameState(StateData* state_data);

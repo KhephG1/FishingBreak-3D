@@ -32,9 +32,9 @@ void DefaultMode::updateInput(const float& dt)
 		{
 			if (!texSelector->getActive())
 			{
-				if (this->tileAddLock == "FALSE")
+				if (this->tileAddLock == "TRUE")
 				{
-					if (this->tMap->hasTile(this->editorStateData.mousePosGrid->x, this->editorStateData.mousePosGrid->y, 0))
+					if (!this->tMap->hasTile(this->editorStateData.mousePosGrid->x, this->editorStateData.mousePosGrid->y, 0))
 					{
 						this->tMap->addTile(this->editorStateData.mousePosGrid->x, this->editorStateData.mousePosGrid->y, 0, this->textureRect, this->collision, this->type);
 					}
@@ -47,6 +47,8 @@ void DefaultMode::updateInput(const float& dt)
 			else
 			{
 				this->textureRect = this->texSelector->getTextureRect();
+				textureRect.left -= 20;
+				textureRect.top -= 20;
 			}
 		}
 	}

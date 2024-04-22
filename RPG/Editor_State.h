@@ -4,9 +4,8 @@
 #include "GUI.h"
 #include "PauseMenu.h"
 #include "TileMap.h"
-#include "DefaultMode.h"
-
-enum EditorModes {DEFAULT_MODE = 0, ENEMY};
+#include "EditorModes.h"
+enum EditorModes {DEFAULT_MODE = 0, ENEMY_MODE};
 
 using namespace GUI;
 class Editor_State: public State
@@ -21,7 +20,7 @@ private:
 	EditorStateData EditorStatedata;
 	
 	std::vector<EditorMode*> editor_modes;
-
+	unsigned activeMode;
 	//functions
 	void initPauseMenu();
 	void initVariables();

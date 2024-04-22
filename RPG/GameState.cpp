@@ -22,6 +22,10 @@ void GameState::initTextures()
 		throw std::runtime_error{ "ERROR" };
 	}
 	textures["PLAYER_SHEET"] = temp;
+
+	if (!textures["RAT1_SHEET"].loadFromFile("Resources/Images/Enemy/rat1_60x64.png")) {
+		throw std::runtime_error{ "ERROR::GAME_STATE::COULD_NOT_LOAD_RAT1_TEXTURE" };
+	}
 }
 
 void GameState::initKeybinds()
@@ -66,7 +70,10 @@ GameState::GameState(StateData* state_data) : State{state_data}
 	initShaders();
 	initTileMap();
 	initPlayerGUI();
-
+	activeEnemies.push_back(new Rat{ 200.f,100.f,&textures["RAT1_SHEET"] });
+	activeEnemies.push_back(new Rat{ 500.f,200.f,&textures["RAT1_SHEET"] });
+	activeEnemies.push_back(new Rat{ 600.f,300.f,&textures["RAT1_SHEET"] });
+	activeEnemies.push_back(new Rat{ 200.f,400.f,&textures["RAT1_SHEET"] });
 }
 
 GameState::~GameState()
@@ -74,6 +81,10 @@ GameState::~GameState()
 	delete player;
 	delete tMap;
 	delete playerGUI;
+
+	for (size_t i = 0; i < activeEnemies.size(); i++) {
+		delete activeEnemies.at(i);
+	}
 
 }
 
@@ -115,7 +126,9 @@ void GameState::update(const float& dt)
 		pmenu->update(mousePosWindow);
 		updatePauseButtons();
 	}
-
+	for (auto* i : activeEnemies) {
+		i->update(dt, mousePosView);
+	}
 }
 
 void GameState::render(sf::RenderTarget* target)
@@ -140,9 +153,13 @@ void GameState::render(sf::RenderTarget* target)
 		pmenu->render(render_tex);
 	}
 	//FINAL RENDER
+	for (auto* i : activeEnemies) {
+		i->render(&render_tex, &core_shader, true, player->getCenter());
+	}
 	render_tex.display();
 	renderSprite.setTexture(render_tex.getTexture());
 	target->draw(renderSprite);
+
 }
 
 
@@ -208,7 +225,9 @@ void GameState::updateTileMap(const float& dt)
 {
 	
 	tMap->update(player,dt);
-	
+	for (auto* i : activeEnemies) {
+		tMap->update(i, dt);
+	}
 }
 
 void GameState::updatePauseButtons()

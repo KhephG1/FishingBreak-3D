@@ -8,17 +8,17 @@ class Enemy: public Entity
 {
 private:
 	//Variables
-	EnemySpawner& spawner;
+	//EnemySpawner& spawner;
 	//initializers
-	void initVariables();
-	void initAnimations();
+	virtual void initVariables();
+	virtual void initAnimations();
 public:
-	Enemy(EnemySpawner& enemySpawner,float xpos, float ypos, sf::Texture* tex_sheet);
+	Enemy();
 	virtual ~Enemy();
 
-	void render(sf::RenderTarget* target, sf::Shader* shader, const bool show_hitbox, const sf::Vector2f light_position = sf::Vector2f{});
-	void update(const float& dt, sf::Vector2f mousePosView);
-	void updateAnimation(const float& dt);
+	virtual void render(sf::RenderTarget* target, sf::Shader* shader, const bool show_hitbox, const sf::Vector2f light_position = sf::Vector2f{})= 0;
+	virtual void update(const float& dt, sf::Vector2f mousePosView) = 0;
+	virtual void updateAnimation(const float& dt) = 0;
 };
 
 #endif
