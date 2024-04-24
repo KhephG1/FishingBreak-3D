@@ -9,6 +9,7 @@ Rat::Rat(float xpos, float ypos, sf::Texture* tex_sheet): Enemy{}
 	createMovementComponent(100.f, 1500.f, 900.f);
 	createAnimationtComponent(*tex_sheet);
 	createHitboxComponent(*sprite, 10.f, 5.f, 44.f, 54.f);
+	createAttributeComponent(1);
 	initAnimations();
 	setPosition(ypos, xpos);
 }
@@ -24,7 +25,7 @@ void Rat::initVariables()
 
 void Rat::initAnimations()
 {
-	animationComponent->addAnimation("IDLE", 25.f, 0, 0, 3, 0, 60, 64);
+	animationComponent->addAnimation("IDLE", 12.f, 0, 0, 3, 0, 60, 64);
 	animationComponent->addAnimation("WALK_DOWN", 11.f, 0, 1, 3, 1, 60, 64);
 	animationComponent->addAnimation("WALK_UP", 11.f, 0, 4, 3, 4, 60, 64);
 	animationComponent->addAnimation("WALK_LEFT", 11.f, 0, 3, 3, 3, 60, 64);
@@ -32,6 +33,8 @@ void Rat::initAnimations()
 	animationComponent->addAnimation("ATTACK", 5.f, 0, 2, 1, 2, 60, 64);
 
 }
+
+
 
 
 void  Rat::updateAnimation(const float& dt)
@@ -90,5 +93,5 @@ void  Rat::render(sf::RenderTarget* target, sf::Shader* shader, const bool show_
 	}
 
 
-	hitbox->render(*target);
+	//hitbox->render(*target);
 }

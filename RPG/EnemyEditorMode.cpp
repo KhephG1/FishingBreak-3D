@@ -29,7 +29,7 @@ void EnemyEditorMode::updateInput(const float& dt)
 	{
 		if (!this->sidebar.getGlobalBounds().contains(sf::Vector2f(*this->editorStateData.mousePosWindow)))
 		{
-			tMap->addTile(editorStateData.mousePosGrid->x, editorStateData.mousePosGrid->y, 0, textureRect, false, TileTypes::ENEMYSPAWNER);
+			tMap->addTile(editorStateData.mousePosGrid->x, editorStateData.mousePosGrid->y, 0, textureRect,type,amount,TimeToSpawn,maxDistance);
 		}
 				
 	}
@@ -42,6 +42,52 @@ void EnemyEditorMode::updateInput(const float& dt)
 				tMap->removeTile(editorStateData.mousePosGrid->x, editorStateData.mousePosGrid->y, 0, ENEMYSPAWNER);
 		}
 	}
+	//Toggle collision
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(editorStateData.keybinds->at("TYPE_UP"))) && this->getKeyTime())
+	{
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
+			if (type > 0) {
+				type--;
+			}
+		}else if (type < 100) {
+			type++;
+		}
+		else {
+			type = 100;
+		}
+	
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(editorStateData.keybinds->at("AMOUNT_UP"))) && this->getKeyTime())
+	{
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
+			if (amount > 0) {
+				amount--;
+			}
+		}else if (amount < 100) {
+			amount++;
+		}
+		else {
+			amount = 100;
+		}
+
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(editorStateData.keybinds->at("MD_UP"))) && this->getKeyTime())
+	{
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
+			if (maxDistance > 0) {
+				maxDistance--;
+			}
+		}else if (maxDistance < 100) {
+			maxDistance++;
+		}
+		else {
+			maxDistance = 100;
+		}
+
+	}
+
+
+	
 
 }
 

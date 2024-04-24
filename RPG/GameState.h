@@ -7,7 +7,7 @@
 #include "PlayerGUI.h"
 #include "Sword.h"
 #include "Bow.h"
-#include "EnemyFiles.h"
+#include "TextTagSystem.h"
 
 class GameState: public State
 {
@@ -19,6 +19,7 @@ private:
 	void initKeybinds();
 	void initPlayers();
 	void initTileMap();
+	void initEnemySystem();
 	sf::View MainView;
 	sf::Vector2i ViewGridPosition;
 	//these variables will be used for rendering the map without tearing
@@ -32,6 +33,7 @@ private:
 	PlayerGUI* playerGUI;
 	sf::Shader core_shader;
 	std::vector<Enemy*> activeEnemies;
+	EnemySystem* enemySystem;
 public:
 
 	GameState(StateData* state_data);
@@ -44,6 +46,9 @@ public:
 	void updatePauseButtons();
 	void updateView(const float& dt);
 	void updatePlayerGUI(const float& dt);
+	void updatePlayer(const float& dt);
+	void updateEnemies(const float& dt);
+	void updateCombat(Enemy* enemy,const int index,const float& dt);
 	virtual void updateInput(const float& dt) override;
 	virtual void update (const float& dt) override;
 	virtual void render(sf::RenderTarget* target = nullptr) override;

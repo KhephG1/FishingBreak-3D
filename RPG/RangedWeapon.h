@@ -1,12 +1,17 @@
 #ifndef RANGEDWEAPON_H
 #define RANGEDWEAPON_H
-#include "Item.h"
+#include "Weapon.h"
 class RangedWeapon :
-    public Item
+    public Weapon
 {
 private:
+protected:
+
 public:
-    RangedWeapon();
+    RangedWeapon(unsigned value, std::string texture_file);
     virtual~RangedWeapon();
+    virtual RangedWeapon* clone() = 0;
+    virtual void update(const sf::Vector2f& mousePosView, const sf::Vector2f center) = 0;
+    virtual void render(sf::RenderTarget& target, sf::Shader* shader = nullptr) = 0;
 };
 #endif

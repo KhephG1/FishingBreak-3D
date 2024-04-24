@@ -23,6 +23,8 @@ public:
 	int accuracy;
 	int defense;
 	int luck;
+
+	const bool dead();
 	//constructors/ destructors
 	AttributeComponent(int lvl);
 	virtual~AttributeComponent();

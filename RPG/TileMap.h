@@ -1,8 +1,10 @@
 #ifndef TILEMAP_H
 #define TILEMAP_H
-#include "Entity.h"
-#include "EnemySpawner.h"
+
+#include "EnemySpawnerTile.h"
 #include "RegularTile.h"
+#include "EnemySystem.h"
+
 class TileMap
 {
 private:
@@ -31,11 +33,14 @@ public:
 	//used to render tiles above the player
 	void DeferredRender(sf::RenderTarget& target, sf::Vector2f playerPos =  sf::Vector2f{}, sf::Shader* shader = nullptr);
 	void addTile(const int x, const int y, const int z, const sf::IntRect texture_rect, const bool collision, const short type);
+	void addTile(const int x, const int y, const int z, const sf::IntRect texture_rect, const int enemy_type, const int enemy_count, const int spawnTimer, const int enemy_max_dist);
 	void removeTile(const int x, const int y, const int z, const int typ = -1);
 	void saveToFile(const std::string file_name);
 	void loadFromFile(const std::string file_name);
 	const sf::Texture* getileSheet() const;
-
+	void updateWorldBoundsCollision(Entity* entity, const float& dt);
+	void updateTileCollision(Entity* entity, const float& dt);
+	void updateTiles(Entity* entity, const float& dt, EnemySystem& enemy_system);
 	void update(Entity* entity, const float& dt);
 
 	//Accessors

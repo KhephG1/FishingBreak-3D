@@ -5,6 +5,7 @@
 void Player::initVariables()
 {
 	attacking = false;
+
 }
 void Player::initComponents()
 {
@@ -18,9 +19,15 @@ void Player::initAnimations()
 	animationComponent->addAnimation("WALK_LEFT", 15.f, 4, 1, 7, 1, 64, 64);
 	animationComponent->addAnimation("WALK_RIGHT", 15.f, 8, 1, 11, 1, 64, 64);
 }
+void Player::initInventory()
+{
+	sword = new Sword{ 20,"Resources/Images/Player/sword.png" };
+	inventory = new Inventory{ 80 };
+}
 //constructors / destructors
 Player::Player(float xpos, float ypos, sf::Texture* tex_sheet) {
 	initVariables();
+	initInventory();
 	createSprite(tex_sheet);
 	sprite->setScale(1, 1);
 	createMovementComponent(100.f, 1500.f, 900.f);
@@ -33,6 +40,8 @@ Player::Player(float xpos, float ypos, sf::Texture* tex_sheet) {
 }
 Player::~Player()
 {
+	delete sword;
+	delete inventory;
 }
 
 AttributeComponent* Player::getAttributeComponent()
@@ -69,20 +78,16 @@ void Player::updateAnimation(const float& dt)
 
 }
 
-void Player::updateAttack()
-{
-}
-
 
 void Player::update(const float& dt, sf::Vector2f mousePosView)
 {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::E))
 		attributeComponent->gainExp(20);
 	movementComp->update(dt);
-	updateAttack();
+
 	updateAnimation(dt);
 	hitbox->update();
-	sword.update(mousePosView, getCenter());
+	sword->update(mousePosView, getCenter());
 	
 }
 
@@ -93,11 +98,11 @@ void Player::render(sf::RenderTarget* target, sf::Shader* shader, const bool sho
 		shader->setUniform("hasTexture", true);
 		shader->setUniform("lightPos", light_position);
 		target->draw(*sprite, shader);
-		sword.render(*target, shader);
+		sword->render(*target, shader);
 	}
 	else {
 		target->draw(*sprite);
-		sword.render(*target);
+		sword->render(*target);
 	}
 	
 	if (show_hitbox) {
@@ -139,4 +144,9 @@ void Player::hideHitbox(const bool choice)
 const bool Player::showHitbox() const
 {
 	return show_hitbox;
+}
+
+Weapon* Player::getWeapon() const 
+{
+	return sword;
 }

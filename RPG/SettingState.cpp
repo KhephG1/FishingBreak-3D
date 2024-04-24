@@ -37,7 +37,8 @@ void SettingState::initKeybinds()
 		std::string operation{};
 		std::string key{};
 		while (stream >> operation >> key) {
-			std::cout << operation << " " << key << std::endl;
+			
+		
 			keybinds[operation] = supportedKeys->at(key);
 		}
 	}

@@ -47,6 +47,9 @@ public:
 	virtual void stopVelocity();
 	virtual void stopVelocityX();
 	virtual void stopVelocityY();
+	//Calculations
+
+	virtual const float getDistance(Entity* other) const;
 };
 
 #endif

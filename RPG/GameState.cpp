@@ -58,6 +58,11 @@ void GameState::initTileMap()
 	tMap->loadFromFile("text.txt");
 }
 
+void GameState::initEnemySystem()
+{
+	enemySystem = new EnemySystem{ activeEnemies, textures };
+}
+
 GameState::GameState(StateData* state_data) : State{state_data}
 {
 	initDifferedRender();
@@ -68,12 +73,11 @@ GameState::GameState(StateData* state_data) : State{state_data}
 	initPlayers();
 	initPauseMenu();
 	initShaders();
+	initEnemySystem();
 	initTileMap();
 	initPlayerGUI();
-	activeEnemies.push_back(new Rat{ 200.f,100.f,&textures["RAT1_SHEET"] });
-	activeEnemies.push_back(new Rat{ 500.f,200.f,&textures["RAT1_SHEET"] });
-	activeEnemies.push_back(new Rat{ 600.f,300.f,&textures["RAT1_SHEET"] });
-	activeEnemies.push_back(new Rat{ 200.f,400.f,&textures["RAT1_SHEET"] });
+	
+
 }
 
 GameState::~GameState()
@@ -81,7 +85,7 @@ GameState::~GameState()
 	delete player;
 	delete tMap;
 	delete playerGUI;
-
+	delete enemySystem;
 	for (size_t i = 0; i < activeEnemies.size(); i++) {
 		delete activeEnemies.at(i);
 	}
@@ -120,15 +124,15 @@ void GameState::update(const float& dt)
 			player->update(dt,mousePosView);//moves player
 		}
 		updatePlayerGUI(dt);
-		
+	
+		updateEnemies(dt);
+
 	}
 	else {
 		pmenu->update(mousePosWindow);
 		updatePauseButtons();
 	}
-	for (auto* i : activeEnemies) {
-		i->update(dt, mousePosView);
-	}
+
 }
 
 void GameState::render(sf::RenderTarget* target)
@@ -144,6 +148,9 @@ void GameState::render(sf::RenderTarget* target)
 	
 		player->render(&render_tex, &core_shader, false, player->getCenter());
 	}
+	for (auto* i : activeEnemies) {
+		i->render(&render_tex, &core_shader, true, player->getCenter());
+	}
 	tMap->DeferredRender(render_tex,player->getCenter(),&core_shader);
 	//begin rendering gui using the default view (not dependant on where we are in map)
 	render_tex.setView(window->getDefaultView());
@@ -153,9 +160,7 @@ void GameState::render(sf::RenderTarget* target)
 		pmenu->render(render_tex);
 	}
 	//FINAL RENDER
-	for (auto* i : activeEnemies) {
-		i->render(&render_tex, &core_shader, true, player->getCenter());
-	}
+	
 	render_tex.display();
 	renderSprite.setTexture(render_tex.getTexture());
 	target->draw(renderSprite);
@@ -223,11 +228,10 @@ void GameState::initShaders()
 
 void GameState::updateTileMap(const float& dt)
 {
-	
-	tMap->update(player,dt);
-	for (auto* i : activeEnemies) {
-		tMap->update(i, dt);
-	}
+	tMap->updateWorldBoundsCollision(player, dt);
+	tMap->updateTileCollision(player,dt);
+	tMap->updateTiles(player,dt, *enemySystem);
+
 }
 
 void GameState::updatePauseButtons()
@@ -243,8 +247,8 @@ void GameState::updateView(const float& dt)
 	//instead of moving the camera manually like in editor state, we set the camera to always follow the player
 	//to avoid "tearing" which results from moving the camera using floating point values, we can use the floor function to reduce
 	 
-	MainView.setCenter(std::floor(player->getPosition().x +(float)(mousePosWindow.x - (float)State_Data->gfxSettings->resolution.width/2.f)/5.f ), 
-		std::floor(player->getPosition().y + (float)(mousePosWindow.y - (float)State_Data->gfxSettings->resolution.height/2.f))/2.f);
+	MainView.setCenter(std::floor(player->getPosition().x +(float)(mousePosWindow.x - (float)State_Data->gfxSettings->resolution.width/2.f)/2.f ), 
+		std::floor(player->getPosition().y + (float)(mousePosWindow.y - (float)State_Data->gfxSettings->resolution.height/2.f)));
 	if (tMap->getMaxSizeFloat().x >= MainView.getSize().x)
 	{
 		if (MainView.getCenter().x - MainView.getSize().x / 2.f < 0.f)
@@ -281,4 +285,41 @@ void GameState::updatePlayerGUI(const float& dt)
 		std::cout << "setting position GUI" << std::endl;
 		player->setPosition(400, 400);
 	}
+}
+
+void GameState::updatePlayer(const float& dt)
+{
+}
+
+void GameState::updateEnemies(const float& dt)
+{
+	int index = 0;
+	for (auto* enemy : activeEnemies) {
+		enemy->update(dt, mousePosView);
+		tMap->updateWorldBoundsCollision(enemy, dt);
+		tMap->updateTileCollision(enemy, dt);
+		updateCombat(enemy,index, dt);
+		if (enemy->dead()) {
+			player->gainXP(enemy->getGainExp());
+			activeEnemies.erase(activeEnemies.begin() + index);
+			--index;
+		}
+		++index;
+	}
+
+}
+
+void GameState::updateCombat(Enemy* enemy, const int index, const float& dt)
+{
+
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+		
+		if (enemy->getGlobalBounds().contains(mousePosView) && player->getDistance(enemy) <= player->getWeapon()->getRange() && player->getWeapon()->getattackTimer()) {
+			std::cout << enemy->getAttributeComponent()->hp;
+			enemy->damage(player->getWeapon()->getDamageMin());
+			std::cout << enemy->getAttributeComponent()->hp;
+		}
+			
+	}
+	
 }

@@ -60,6 +60,7 @@ void PlayerGUI::updatehpBar()
 
 void PlayerGUI::updateEXPBar()
 {
+	expBar->setMaxVal(player->getAttributeComponent()->expNext);
 	expBar->update(player->getAttributeComponent()->exp);
 }
 

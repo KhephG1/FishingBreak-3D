@@ -333,3 +333,8 @@ void ProgressBar::render(sf::RenderTarget& target)
 	target.draw(Text);
 
 }
+
+void GUI::ProgressBar::setMaxVal(const float& value)
+{
+	maxVal = value;
+}

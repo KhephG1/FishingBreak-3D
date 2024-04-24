@@ -23,7 +23,8 @@ private:
 	void initKeys();
 	void initStateData();
 	void initGraphicSettings();
-	//we cant create objects of state only pointers and references
+	//we cant 
+	//  objects of state only pointers and references
 public:
 	//constructors / destructors
 	Game();

@@ -122,7 +122,7 @@ void Entity::move(const float& dt,const float dir_x, const float dir_y)
 	}
 	if (skillComponent) {
 		skillComponent->gainExp(ENDURANCE, 1);
-		std::cout << skillComponent->getSkill(ENDURANCE) << std::endl;
+		
 	}
 }
 
@@ -140,6 +140,13 @@ void Entity::stopVelocityX()
 void Entity::stopVelocityY()
 {
 	movementComp->stopVelocityY();
+}
+
+const float Entity::getDistance(Entity* other) const
+{
+	sf::Vector2f temp = other->getCenter() - getCenter();
+	float tempmagnitude = std::sqrt(temp.x * temp.x + temp.y * temp.y);
+	return tempmagnitude;
 }
 
 

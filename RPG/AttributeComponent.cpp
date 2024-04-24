@@ -1,6 +1,11 @@
 #include "stdafx.h"
 #include "AttributeComponent.h"
 
+const bool AttributeComponent::dead()
+{
+	return hp<=0;
+}
+
 AttributeComponent::AttributeComponent(int lvl)
 {
 	level = lvl;
@@ -77,7 +82,7 @@ std::string AttributeComponent::debugPrint() const
 void AttributeComponent::loseHP(const int hp)
 {
 	this->hp -= hp;
-	if (hp < 0) {
+	if (this->hp < 0) {
 		this->hp = 0;
 	}
 }
@@ -85,7 +90,7 @@ void AttributeComponent::loseHP(const int hp)
 void AttributeComponent::gainHP(const int hp)
 {
 	this->hp += hp;
-	if (hp > hpMax) {
+	if (this->hp > hpMax) {
 		this->hp = hpMax;
 	}
 }

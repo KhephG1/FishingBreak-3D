@@ -1,11 +1,19 @@
 #include "stdafx.h"
 #include "Item.h"
 
-Item::Item()
+void Item::initVariables()
 {
-	std::cout << "created Item" << std::endl;
+
+}
+
+Item::Item(unsigned value)
+{
+	initVariables();
+	this->value = value;
+	type = DEFAULT_ITEM;
 }
 
 Item::~Item()
 {
 }
+

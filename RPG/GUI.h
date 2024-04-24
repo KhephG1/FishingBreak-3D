@@ -121,6 +121,7 @@ namespace GUI
 			//Functions
 		void update(const int currentVal);
 		void render(sf::RenderTarget& target);
+		void setMaxVal(const float& value);
 	};
 }
 #endif

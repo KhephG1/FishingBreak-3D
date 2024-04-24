@@ -12,7 +12,6 @@ public:
     virtual~Rat();
 
     //Functions
-
     void updateAnimation(const float& dt);
     void update(const float& dt, sf::Vector2f mousePosView);
 

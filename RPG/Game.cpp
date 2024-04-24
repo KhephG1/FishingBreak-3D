@@ -41,7 +41,10 @@ void Game::initKeys()
 	supportedKeys["L"] = sf::Keyboard::Key::L;
 	supportedKeys["PageUp"] = sf::Keyboard::Key::PageUp;
 	supportedKeys["PageDown"] = sf::Keyboard::Key::PageDown;
-	
+	supportedKeys["1"] = sf::Keyboard::Key::Num1;
+	supportedKeys["2"] = sf::Keyboard::Key::Num2;
+	supportedKeys["3"] = sf::Keyboard::Key::Num3;
+	supportedKeys["4"] = sf::Keyboard::Key::Num4;
 
 
 }

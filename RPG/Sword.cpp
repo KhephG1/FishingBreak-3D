@@ -1,13 +1,11 @@
 #include "stdafx.h"
 #include "Sword.h"
 
-Sword::Sword()
+Sword::Sword(unsigned value, std::string texture_file):MeleeWeapon{value, texture_file}
 {
-	if (!weaponTexture.loadFromFile("Resources/Images/Player/sword.png")) {
-		std::cout << "weapon loading failed" << std::endl;
-	}
-	weaponSprite.setTexture(weaponTexture);
+	
 	weaponSprite.setOrigin(weaponSprite.getGlobalBounds().width / 2.f, weaponSprite.getGlobalBounds().height);
+	type = MELEEWEAPON;
 }
 
 Sword::~Sword()
@@ -32,4 +30,9 @@ void Sword::render(sf::RenderTarget& target, sf::Shader* shader)
 	else {
 		target.draw(weaponSprite);
 	}
+}
+
+Sword* Sword::clone()
+{
+	return new Sword{ *this };
 }
