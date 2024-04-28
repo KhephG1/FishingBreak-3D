@@ -31,5 +31,6 @@ public:
 	void hideHitbox(const bool choice);
 	const bool showHitbox() const;
 	 Weapon* getWeapon()const;
+	 const std::string CharacterTabString()const;
 };
 #endif

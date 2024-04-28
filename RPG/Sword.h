@@ -5,7 +5,7 @@ class Sword :
     public MeleeWeapon
 {
 public:
-    Sword(unsigned value, std::string texture_file);
+    Sword(unsigned level,unsigned value, std::string texture_file);
     virtual ~Sword();
     virtual void update(const sf::Vector2f& mousePosView, const sf::Vector2f center) override;
     virtual void render(sf::RenderTarget& target, sf::Shader* shader = nullptr) override;

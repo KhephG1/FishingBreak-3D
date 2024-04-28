@@ -6,15 +6,16 @@
 class EnemySpawnerTile;
 class Enemy: public Entity
 {
-private:
+protected:
 	//Variables
 	//EnemySpawner& spawner;
 	//initializers
+	EnemySpawnerTile& enemySpawnerTile;
 	unsigned gainEXP;
 	virtual void initVariables();
 	virtual void initAnimations();
 public:
-	Enemy();
+	Enemy(EnemySpawnerTile& spawnerTile);
 	virtual ~Enemy();
 	virtual void damage(const int damage);
 	virtual const AttributeComponent* getAttributeComponent();
@@ -22,7 +23,9 @@ public:
 	virtual void update(const float& dt, sf::Vector2f mousePosView) = 0;
 	virtual void updateAnimation(const float& dt) = 0;
 	virtual const bool dead();
+	virtual void generateAttributes(const unsigned lvl);
 	const unsigned& getGainExp() const;
+	EnemySpawnerTile& getSpawnerTile();
 
 };
 

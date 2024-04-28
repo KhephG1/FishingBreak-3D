@@ -3,8 +3,8 @@
 
 void Weapon::initVariables()
 {
-	range = 20;
-	damageMax = 2;
+	range = 50;
+	damageMax = 5;
 	damageMin = 1;
 	//Timer
 	attackTimer.restart();
@@ -16,7 +16,7 @@ Weapon::~Weapon()
 {
 }
 
-Weapon::Weapon(unsigned value, std::string texture_file): Item{value}
+Weapon::Weapon(unsigned level,unsigned value, std::string texture_file): Item{level,value}
 {
 	initVariables();
 	if (!weaponTexture.loadFromFile(texture_file)) {
@@ -24,6 +24,10 @@ Weapon::Weapon(unsigned value, std::string texture_file): Item{value}
 	}
 	weaponSprite.setTexture(weaponTexture);
 	
+}
+
+Weapon::Weapon(unsigned level, unsigned damage_min, unsigned damage_max, unsigned range, unsigned value, std::string texture_file): Item{level,value}
+{
 }
 
 const unsigned Weapon::getRange() const
@@ -34,6 +38,11 @@ const unsigned Weapon::getRange() const
 const unsigned& Weapon::getDamageMin() const
 {
 	return damageMin;
+}
+
+const unsigned Weapon::getDamageDynamic() const
+{
+	return rand() % (damageMax - damageMin + 1) + damageMin;
 }
 
 const unsigned& Weapon::getDamageMax() const

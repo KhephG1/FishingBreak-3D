@@ -71,6 +71,21 @@ void EnemyEditorMode::updateInput(const float& dt)
 		}
 
 	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(editorStateData.keybinds->at("TTS_UP"))) && this->getKeyTime())
+	{
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
+			if (TimeToSpawn > 0) {
+				TimeToSpawn--;
+			}
+		}
+		else if (TimeToSpawn < 1000) {
+			TimeToSpawn++;
+		}
+		else {
+			TimeToSpawn = 1000;
+		}
+
+	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(editorStateData.keybinds->at("MD_UP"))) && this->getKeyTime())
 	{
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {

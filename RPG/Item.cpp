@@ -6,8 +6,9 @@ void Item::initVariables()
 
 }
 
-Item::Item(unsigned value)
+Item::Item(unsigned value, unsigned lvl)
 {
+	level = lvl;
 	initVariables();
 	this->value = value;
 	type = DEFAULT_ITEM;

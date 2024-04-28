@@ -498,10 +498,11 @@ void TileMap::updateTiles(Entity* entity, const float& dt,EnemySystem& enemy_sys
 					EnemySpawnerTile* es = dynamic_cast<EnemySpawnerTile*>(tMap.at(x).at(y).at(layers).at(k));
 					if (es) {
 						//this if statement ensures enemies are spawned one at a time
-						if (!es->getSpawned()) {
+						if (!es->getSpawned()&& es->getEnemyCounter() < es->getEnemyAmount()) {
 							//pass position to create enenmy as  ypos,xpos!!!
-							enemy_system.createEnemy(RAT,y * gridSizeF,x*gridSizeF );
+							enemy_system.createEnemy(RAT,y * gridSizeF,x*gridSizeF, *es );
 							es->SetSpawned(true);
+							
 						}
 						
 					}

@@ -142,9 +142,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AI.cpp" />
+    <ClCompile Include="AIcomponent.cpp" />
+    <ClCompile Include="AIFollow.cpp" />
     <ClCompile Include="AnimationComponent.cpp" />
     <ClCompile Include="AttributeComponent.cpp" />
     <ClCompile Include="Bow.cpp" />
+    <ClCompile Include="characterTab.cpp" />
     <ClCompile Include="DefaultMode.cpp" />
     <ClCompile Include="EditorMode.cpp" />
     <ClCompile Include="Enemy.cpp" />
@@ -157,6 +161,7 @@
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameState.cpp" />
+    <ClCompile Include="GuiTabs.cpp" />
     <ClCompile Include="HitboxComponent.cpp" />
     <ClCompile Include="Inventory.cpp" />
     <ClCompile Include="Item.cpp" />
@@ -179,15 +184,20 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Sword.cpp" />
+    <ClCompile Include="Tab.cpp" />
     <ClCompile Include="TextTagSystem.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="TileMap.cpp" />
     <ClCompile Include="Weapon.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AI.h" />
+    <ClInclude Include="AIcomponent.h" />
+    <ClInclude Include="AIFollow.h" />
     <ClInclude Include="AnimationComponent.h" />
     <ClInclude Include="AttributeComponent.h" />
     <ClInclude Include="Bow.h" />
+    <ClInclude Include="characterTab.h" />
     <ClInclude Include="DefaultMode.h" />
     <ClInclude Include="EditorMode.h" />
     <ClInclude Include="EditorModes.h" />
@@ -202,6 +212,7 @@
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameState.h" />
+    <ClInclude Include="GuiTabs.h" />
     <ClInclude Include="HitboxComponent.h" />
     <ClInclude Include="Inventory.h" />
     <ClInclude Include="Item.h" />
@@ -220,6 +231,7 @@
     <ClInclude Include="State.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Sword.h" />
+    <ClInclude Include="Tab.h" />
     <ClInclude Include="TextTagSystem.h" />
     <ClInclude Include="Tile.h" />
     <ClInclude Include="TileMap.h" />

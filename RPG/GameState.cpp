@@ -60,17 +60,19 @@ void GameState::initTileMap()
 
 void GameState::initEnemySystem()
 {
-	enemySystem = new EnemySystem{ activeEnemies, textures };
+	enemySystem = new EnemySystem{ activeEnemies, textures, *player };
 }
 
 GameState::GameState(StateData* state_data) : State{state_data}
 {
+	initPlayers();
 	initDifferedRender();
+	initSystems();
 	initView();
 	initFonts();
 	initTextures();
 	initKeybinds();
-	initPlayers();
+	
 	initPauseMenu();
 	initShaders();
 	initEnemySystem();
@@ -86,6 +88,7 @@ GameState::~GameState()
 	delete tMap;
 	delete playerGUI;
 	delete enemySystem;
+	delete tts;
 	for (size_t i = 0; i < activeEnemies.size(); i++) {
 		delete activeEnemies.at(i);
 	}
@@ -120,12 +123,11 @@ void GameState::update(const float& dt)
 		-player movement depends on if it is colliding with a tile on the current frame
 		*/
 		updateTileMap(dt);//checks collisions
-		if (player) {
-			player->update(dt,mousePosView);//moves player
-		}
-		updatePlayerGUI(dt);
-	
+		
+		updatePlayer(dt);
 		updateEnemies(dt);
+		tts->update(dt);
+		playerGUI->updatePlayerTabs();
 
 	}
 	else {
@@ -152,6 +154,7 @@ void GameState::render(sf::RenderTarget* target)
 		i->render(&render_tex, &core_shader, true, player->getCenter());
 	}
 	tMap->DeferredRender(render_tex,player->getCenter(),&core_shader);
+	tts->render(&render_tex);
 	//begin rendering gui using the default view (not dependant on where we are in map)
 	render_tex.setView(window->getDefaultView());
 	playerGUI->render(render_tex);
@@ -171,30 +174,25 @@ void GameState::render(sf::RenderTarget* target)
 void GameState::updatePlayerInput(const float& dt)
 {
 	//update player input
-	
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(keybinds.at("MOVE_LEFT")))) {
-		player->move(dt, -1.f, 0.f);
-		if (getKeyTime()) {
-			player->gainXP(10);
-		}
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(keybinds.at("MOVE_RIGHT")))) {
-		player->move(dt, 1.f, 0.f);
-		if (getKeyTime()) {
-			player->loseXP(10);
-		}
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(keybinds.at("MOVE_UP")))) {
-		player->move(dt, 0.f, -1.f);
-		if (getKeyTime())
-			player->gainHP(1);
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(keybinds.at("MOVE_DOWN")))) {
-		player->move(dt, 0.f, 1.f);
-		if(getKeyTime())
-			player->loseHP(1);
-	}
+	if (!playerGUI->getTabsOpen()) {
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(keybinds.at("MOVE_LEFT")))) {
+			player->move(dt, -1.f, 0.f);
 
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(keybinds.at("MOVE_RIGHT")))) {
+			player->move(dt, 1.f, 0.f);
+
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(keybinds.at("MOVE_UP")))) {
+			player->move(dt, 0.f, -1.f);
+
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(keybinds.at("MOVE_DOWN")))) {
+			player->move(dt, 0.f, 1.f);
+
+
+		}
+	}
 	
 }
 
@@ -226,6 +224,11 @@ void GameState::initShaders()
 	}
 }
 
+void GameState::initSystems()
+{
+	tts = new TextTagSystem("Resources/Fonts/Halo3.ttf");
+}
+
 void GameState::updateTileMap(const float& dt)
 {
 	tMap->updateWorldBoundsCollision(player, dt);
@@ -246,35 +249,36 @@ void GameState::updateView(const float& dt)
 {
 	//instead of moving the camera manually like in editor state, we set the camera to always follow the player
 	//to avoid "tearing" which results from moving the camera using floating point values, we can use the floor function to reduce
-	 
-	MainView.setCenter(std::floor(player->getPosition().x +(float)(mousePosWindow.x - (float)State_Data->gfxSettings->resolution.width/2.f)/2.f ), 
-		std::floor(player->getPosition().y + (float)(mousePosWindow.y - (float)State_Data->gfxSettings->resolution.height/2.f)));
-	if (tMap->getMaxSizeFloat().x >= MainView.getSize().x)
-	{
-		if (MainView.getCenter().x - MainView.getSize().x / 2.f < 0.f)
+	if (!playerGUI->getTabsOpen()) {
+		MainView.setCenter(std::floor(player->getPosition().x + (float)(mousePosWindow.x - (float)State_Data->gfxSettings->resolution.width / 2.f) / 2.f),
+			std::floor(player->getPosition().y + (float)(mousePosWindow.y - (float)State_Data->gfxSettings->resolution.height / 2.f)));
+		if (tMap->getMaxSizeFloat().x >= MainView.getSize().x)
 		{
-			MainView.setCenter(0.f + MainView.getSize().x / 2.f, MainView.getCenter().y);
+			if (MainView.getCenter().x - MainView.getSize().x / 2.f < 0.f)
+			{
+				MainView.setCenter(0.f + MainView.getSize().x / 2.f, MainView.getCenter().y);
+			}
+			else if (MainView.getCenter().x + MainView.getSize().x / 2.f > tMap->getMaxSizeFloat().x)
+			{
+				MainView.setCenter(this->tMap->getMaxSizeFloat().x - MainView.getSize().x / 2.f, MainView.getCenter().y);
+			}
 		}
-		else if (MainView.getCenter().x + MainView.getSize().x / 2.f > tMap->getMaxSizeFloat().x)
-		{
-			MainView.setCenter(this->tMap->getMaxSizeFloat().x - MainView.getSize().x / 2.f, MainView.getCenter().y);
-		}
-	}
 
-	if (this->tMap->getMaxSizeFloat().y >= MainView.getSize().y)
-	{
-		if (MainView.getCenter().y - MainView.getSize().y / 2.f < 0.f)
+		if (this->tMap->getMaxSizeFloat().y >= MainView.getSize().y)
 		{
-			MainView.setCenter(MainView.getCenter().x, 0.f + MainView.getSize().y / 2.f);
+			if (MainView.getCenter().y - MainView.getSize().y / 2.f < 0.f)
+			{
+				MainView.setCenter(MainView.getCenter().x, 0.f + MainView.getSize().y / 2.f);
+			}
+			else if (MainView.getCenter().y + MainView.getSize().y / 2.f > tMap->getMaxSizeFloat().y)
+			{
+				MainView.setCenter(MainView.getCenter().x, this->tMap->getMaxSizeFloat().y - MainView.getSize().y / 2.f);
+			}
 		}
-		else if (MainView.getCenter().y + MainView.getSize().y / 2.f > tMap->getMaxSizeFloat().y)
-		{
-			MainView.setCenter(MainView.getCenter().x, this->tMap->getMaxSizeFloat().y - MainView.getSize().y / 2.f);
-		}
-	}
 
-	ViewGridPosition.x = static_cast<int>(MainView.getCenter().x) / static_cast<int>(State_Data->gridsize);
-	ViewGridPosition.y = static_cast<int>(MainView.getCenter().y) / static_cast<int>(this->State_Data->gridsize);
+		ViewGridPosition.x = static_cast<int>(MainView.getCenter().x) / static_cast<int>(State_Data->gridsize);
+		ViewGridPosition.y = static_cast<int>(MainView.getCenter().y) / static_cast<int>(this->State_Data->gridsize);
+	}
 }
 
 void GameState::updatePlayerGUI(const float& dt)
@@ -285,10 +289,18 @@ void GameState::updatePlayerGUI(const float& dt)
 		std::cout << "setting position GUI" << std::endl;
 		player->setPosition(400, 400);
 	}
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key{ (sf::Keyboard::Key)keybinds.at("OPEN_CHARACTER_TAB") })) {
+		playerGUI->toggleTabs();
+	}
 }
 
 void GameState::updatePlayer(const float& dt)
 {
+	if (player) {
+		player->update(dt, mousePosView);//moves player
+	}
+	updatePlayerGUI(dt);
 }
 
 void GameState::updateEnemies(const float& dt)
@@ -301,7 +313,8 @@ void GameState::updateEnemies(const float& dt)
 		updateCombat(enemy,index, dt);
 		if (enemy->dead()) {
 			player->gainXP(enemy->getGainExp());
-			activeEnemies.erase(activeEnemies.begin() + index);
+			tts->createTextTagString(EXPERIENCE, player->getCenter().x, player->getCenter().y,(int)enemy->getGainExp(),"+","XP");
+			enemySystem->removeEnemy(index);
 			--index;
 		}
 		++index;
@@ -312,12 +325,12 @@ void GameState::updateEnemies(const float& dt)
 void GameState::updateCombat(Enemy* enemy, const int index, const float& dt)
 {
 
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && enemy->getGlobalBounds().contains(mousePosView)&&player->getDistance(enemy) < player->getWeapon()->getRange()) {
 		
-		if (enemy->getGlobalBounds().contains(mousePosView) && player->getDistance(enemy) <= player->getWeapon()->getRange() && player->getWeapon()->getattackTimer()) {
-			std::cout << enemy->getAttributeComponent()->hp;
-			enemy->damage(player->getWeapon()->getDamageMin());
-			std::cout << enemy->getAttributeComponent()->hp;
+		if (player->getWeapon()->getattackTimer()) {
+			tts->createTextTagString(NEGATIVE, player->getCenter().x, player->getCenter().y, (int)player->getWeapon()->getDamageDynamic(),"-","HP");
+			enemy->damage(player->getWeapon()->getDamageDynamic());
+			
 		}
 			
 	}

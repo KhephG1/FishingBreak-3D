@@ -31,6 +31,7 @@ public:
 	void createAttributeComponent(const int lvl);
 	void createSprite(sf::Texture* texture);
 	void createSkillComponent();
+	void createAIComponent();
 	//Accessors
 	virtual const sf::Vector2f getPosition() const;
 	//returns the dimensions  (width and height) of the hitbox

@@ -5,6 +5,7 @@
 void Player::initVariables()
 {
 	attacking = false;
+	sword->generate(3,1);
 
 }
 void Player::initComponents()
@@ -21,12 +22,12 @@ void Player::initAnimations()
 }
 void Player::initInventory()
 {
-	sword = new Sword{ 20,"Resources/Images/Player/sword.png" };
+	sword = new Sword{1, 20,"Resources/Images/Player/sword.png" };
 	inventory = new Inventory{ 80 };
 }
 //constructors / destructors
 Player::Player(float xpos, float ypos, sf::Texture* tex_sheet) {
-	initVariables();
+	std::cout << "player constructor" << std::endl;
 	initInventory();
 	createSprite(tex_sheet);
 	sprite->setScale(1, 1);
@@ -36,10 +37,12 @@ Player::Player(float xpos, float ypos, sf::Texture* tex_sheet) {
 	createAttributeComponent(1);
 	createSkillComponent();
 	initAnimations();
+	initVariables();
 	setPosition(ypos, xpos);
 }
 Player::~Player()
 {
+	std::cout << "player destructor" << std::endl;
 	delete sword;
 	delete inventory;
 }
@@ -149,4 +152,16 @@ const bool Player::showHitbox() const
 Weapon* Player::getWeapon() const 
 {
 	return sword;
+}
+
+const std::string Player::CharacterTabString() const
+{
+	std::stringstream ss;
+	if (this ) {
+		std::cout << "setting string" << std::endl;
+		ss << "Level: " << attributeComponent->level << std::endl;
+		ss << "Experience: " << attributeComponent->exp << std::endl;
+		ss << "Experience required: " << attributeComponent->expNext << std::endl;
+	}
+	return ss.str();
 }

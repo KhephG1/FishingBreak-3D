@@ -9,7 +9,7 @@ Enemy::~Enemy()
 
 void Enemy::initVariables()
 {
-	gainEXP = 10;
+
 }
 
 void Enemy::initAnimations()
@@ -18,7 +18,7 @@ void Enemy::initAnimations()
 
 }
 //constructors / destructors
-Enemy::Enemy( ) {
+Enemy::Enemy(EnemySpawnerTile& spawnerTile) : enemySpawnerTile{ spawnerTile } {
 	initVariables();
 	initAnimations();
 }
@@ -45,9 +45,19 @@ const bool Enemy::dead()
 	}
 }
 
+void Enemy::generateAttributes(const unsigned lvl)
+{
+	gainEXP = lvl * (rand() % 5 + 1);
+}
+
 const unsigned& Enemy::getGainExp() const
 {
 	return gainEXP;
+}
+
+EnemySpawnerTile& Enemy::getSpawnerTile()
+{
+	return enemySpawnerTile;
 }
 
 

@@ -11,9 +11,10 @@ protected:
 	//Variables
 	unsigned value;
 	short unsigned type;
+	unsigned level;
 
 public:
-	Item(unsigned value);
+	Item(unsigned value, unsigned level);
 	virtual ~Item();
 
 

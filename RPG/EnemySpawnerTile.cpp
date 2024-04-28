@@ -2,12 +2,14 @@
 #include "EnemySpawnerTile.h"
 
 EnemySpawnerTile::EnemySpawnerTile(int grid_x, int grid_y, float gridSizeF, const sf::Texture& texture, const sf::IntRect texture_rect,
-	int enemy_type, int enemy_count, int enemy_spawn_timer, int enemy_max_Distance):Tile(TileTypes::ENEMYSPAWNER,grid_x,grid_y,gridSizeF,texture,texture_rect,false)
+	int enemy_type, int enemy_count, sf::Int32 enemy_time_to_spawn, int enemy_max_Distance):Tile(TileTypes::ENEMYSPAWNER,grid_x,grid_y,gridSizeF,texture,texture_rect,false)
 {
 	spawned = false;
 	Enemytype = enemy_type;
 	EnemyCount = enemy_count;
-	EnemySpawnTimer = enemy_spawn_timer;
+	EnemyCounter = 0;
+	EnemySpawnTimer.restart();
+	EnemyTimeToSpawn = enemy_time_to_spawn;
 	EnemymaxDistance = enemy_max_Distance;
 	
 
@@ -19,6 +21,9 @@ EnemySpawnerTile::~EnemySpawnerTile()
 
 void EnemySpawnerTile::update()
 {
+	if (canSpawn()) {
+		spawned = false;
+	}
 }
 
 
@@ -50,7 +55,7 @@ const std::string EnemySpawnerTile::getAsString() const
 	*/
 
 	ss << type << " " << shape.getTextureRect().left << " " << shape.getTextureRect().top << " "
-		<< Enemytype << " " << EnemyCount << " " << EnemySpawnTimer << " " << EnemymaxDistance;
+		<< Enemytype << " " << EnemyCount << " " << EnemyTimeToSpawn << " " << EnemymaxDistance;
 
 	//
 	//  << ss.str() << "\n";
@@ -61,10 +66,49 @@ const std::string EnemySpawnerTile::getAsString() const
 void EnemySpawnerTile::SetSpawned(const bool spawned)
 {
 	this->spawned = spawned;
+	EnemySpawnTimer.restart();
+}
+
+const bool EnemySpawnerTile::canSpawn() const
+{
+	if(EnemySpawnTimer.getElapsedTime().asMilliseconds() >= EnemyTimeToSpawn*50)
+		return true;
+
+	return false;
+}
+
+void EnemySpawnerTile::decreaseEnemyCounter()
+{
+	if (EnemyCounter < 0) {
+		EnemyCounter = 0;
+	}
+	else {
+		--EnemyCounter;
+	}
+}
+
+void EnemySpawnerTile::increaseEnemyCounter()
+{
+	if (EnemyCounter > EnemyCount) {
+		EnemyCounter = EnemyCount;
+	}
+	else {
+		++EnemyCounter;
+	}
 }
 
 const bool& EnemySpawnerTile::getSpawned() const
 {
 	return spawned;
+}
+
+const int& EnemySpawnerTile::getEnemyCounter() const
+{
+	return EnemyCounter;
+}
+
+const int& EnemySpawnerTile::getEnemyAmount() const
+{
+	return EnemyCount;
 }
 

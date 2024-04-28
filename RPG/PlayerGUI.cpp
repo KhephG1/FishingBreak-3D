@@ -25,6 +25,13 @@ void PlayerGUI::initLevelBar()
 	lvlBarText.setPosition(lvlBarOutline.getPosition().x + GUI::p2pX(0.00781,VM), lvlBarOutline.getPosition().y);
 }
 
+void PlayerGUI::initPlayerTabs(sf::VideoMode& vm, sf::Font& font, Player& player)
+{
+	guiTabs = new GuiTabs{ font,vm,player };
+}
+
+
+
 void PlayerGUI::initEXPBar()
 {
 
@@ -44,12 +51,15 @@ PlayerGUI::PlayerGUI(Player* plyr, sf::VideoMode& vm): player{plyr}, VM{vm}
 	inithpBar();
 	initEXPBar();
 	initLevelBar();
+	initPlayerTabs(vm,font,*plyr);
+	//tabs
 }
 
 PlayerGUI::~PlayerGUI()
 {
 	delete hpBar;
 	delete expBar;
+	delete guiTabs;
 }
 
 void PlayerGUI::updatehpBar()
@@ -69,6 +79,12 @@ void PlayerGUI::updatelvlbar()
 	lvlBarText.setString(std::to_string(player->getAttributeComponent()->level));
 }
 
+void PlayerGUI::updatePlayerTabs()
+{
+	guiTabs->update();
+}
+
+
 void PlayerGUI::renderhpBar(sf::RenderTarget& target)
 {
 	hpBar->render(target);
@@ -86,11 +102,20 @@ void PlayerGUI::renderlvlBar(sf::RenderTarget& target)
 	target.draw(lvlBarText);
 }
 
+void PlayerGUI::renderPlayerTabs(sf::RenderTarget& target)
+{
+	guiTabs->render(&target);
+}
+
+
+
 void PlayerGUI::update(const float& dt)
 {
 	updatehpBar();
 	updateEXPBar();
 	updatelvlbar();
+	updatePlayerTabs();
+
 }
 
 void PlayerGUI::render(sf::RenderTarget& target)
@@ -98,4 +123,18 @@ void PlayerGUI::render(sf::RenderTarget& target)
 	renderhpBar(target);
 	renderEXPBar(target);
 	renderlvlBar(target);
+	renderPlayerTabs(target);
+
+	//Tabs
+
+}
+
+void PlayerGUI::toggleTabs()
+{
+	guiTabs->toggleTabs();
+}
+
+const bool PlayerGUI::getTabsOpen()
+{
+	return guiTabs->tabsOpen();
 }

@@ -34,6 +34,7 @@ private:
 	sf::Shader core_shader;
 	std::vector<Enemy*> activeEnemies;
 	EnemySystem* enemySystem;
+	TextTagSystem* tts;
 public:
 
 	GameState(StateData* state_data);
@@ -42,6 +43,7 @@ public:
 	void initPauseMenu();
 	void initPlayerGUI();
 	void initShaders();
+	void initSystems();
 	void updateTileMap(const float& dt);
 	void updatePauseButtons();
 	void updateView(const float& dt);

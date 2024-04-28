@@ -1,26 +1,32 @@
 #include "stdafx.h"
 #include "Rat.h"
 
-Rat::Rat(float xpos, float ypos, sf::Texture* tex_sheet): Enemy{}
+Rat::Rat(float xpos, float ypos, sf::Texture* tex_sheet,EnemySpawnerTile& spawnerTile, Entity& plyr): Enemy{spawnerTile}
 {
 	initVariables();
+	
 	createSprite(tex_sheet);
 	sprite->setScale(1, 1);
 	createMovementComponent(100.f, 1500.f, 900.f);
 	createAnimationtComponent(*tex_sheet);
 	createHitboxComponent(*sprite, 10.f, 5.f, 44.f, 54.f);
 	createAttributeComponent(1);
+	generateAttributes(attributeComponent->level);
 	initAnimations();
 	setPosition(ypos, xpos);
+	initGUI();
+
+	follow = new AIFollow{ *this,plyr };
 }
 
 Rat::~Rat()
 {
+	delete follow;
 }
 
 void Rat::initVariables()
 {
-
+	
 }
 
 void Rat::initAnimations()
@@ -32,6 +38,17 @@ void Rat::initAnimations()
 	animationComponent->addAnimation("WALK_RIGHT", 5.f, 0, 2, 3, 2, 60, 64);
 	animationComponent->addAnimation("ATTACK", 5.f, 0, 2, 1, 2, 60, 64);
 
+}
+
+void Rat::initGUI()
+{
+	hpBar.setFillColor(sf::Color::Red);
+	hpBar.setSize(sf::Vector2f{ 50.f,10.f });
+	hpBar.setPosition(sprite->getPosition());
+}
+
+void Rat::initAI()
+{
 }
 
 
@@ -71,10 +88,12 @@ void  Rat::update(const float& dt, sf::Vector2f mousePosView)
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::E))
 		attributeComponent->gainExp(20);
 	movementComp->update(dt);
+	hpBar.setSize(sf::Vector2f{ 50.f * ((float)attributeComponent->hp / attributeComponent->hpMax),10.f });
+	hpBar.setPosition(sprite->getPosition());
 	//updateAttack();
 	updateAnimation(dt);
 	hitbox->update();
-
+	follow->update(dt);
 
 }
 
@@ -85,11 +104,12 @@ void  Rat::render(sf::RenderTarget* target, sf::Shader* shader, const bool show_
 		shader->setUniform("hasTexture", true);
 		shader->setUniform("lightPos", light_position);
 		target->draw(*sprite, shader);
+		target->draw(hpBar);
 
 	}
 	else {
 		target->draw(*sprite);
-
+		target->draw(hpBar);
 	}
 
 
