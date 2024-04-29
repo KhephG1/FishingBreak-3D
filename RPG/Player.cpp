@@ -4,10 +4,8 @@
 //initializer functions
 void Player::initVariables()
 {
-	initAttack = false;
 	attacking = false;
-	weapon->generate(3,1);
-	damageTimerMax = 500;
+	sword->generate(3,1);
 
 }
 void Player::initComponents()
@@ -24,17 +22,16 @@ void Player::initAnimations()
 }
 void Player::initInventory()
 {
-	weapon = new Sword{1, 20,"Resources/Images/Player/sword.png" };
+	sword = new Sword{1, 20,"Resources/Images/Player/sword.png" };
 	inventory = new Inventory{ 80 };
 }
 //constructors / destructors
 Player::Player(float xpos, float ypos, sf::Texture* tex_sheet) {
 	std::cout << "player constructor" << std::endl;
 	initInventory();
-	initSounds();
 	createSprite(tex_sheet);
 	sprite->setScale(1, 1);
-	createMovementComponent(140.f, 700.f, 500.f);
+	createMovementComponent(100.f, 1500.f, 900.f);
 	createAnimationtComponent(*tex_sheet);
 	createHitboxComponent(*sprite,10.f,5.f,44.f,54.f);
 	createAttributeComponent(1);
@@ -46,7 +43,7 @@ Player::Player(float xpos, float ypos, sf::Texture* tex_sheet) {
 Player::~Player()
 {
 	std::cout << "player destructor" << std::endl;
-	delete weapon;
+	delete sword;
 	delete inventory;
 }
 
@@ -59,32 +56,27 @@ void Player::updateAnimation(const float& dt)
 {
 	if (movementComp->getState(IDLE)) {
 		animationComponent->play("IDLE",dt);
-
 	}
 	else if(movementComp->getState(MOVING_LEFT)) {
 	
 		sprite->setScale(1, 1);
 		//the get "movementcomp->getvelocity..." arguments determine the speed at which the animation plays. If we are moving slower, the animation plays slower
 		animationComponent->play("WALK_LEFT", dt,-movementComp->getVelocity().x, movementComp->getMaxVelocity());
-		
 	}
 	else if (movementComp->getState(MOVING_RIGHT)) {
 	
 		sprite->setScale(1, 1);
 		animationComponent->play("WALK_RIGHT", dt, movementComp->getVelocity().x, movementComp->getMaxVelocity());
-
 	}
 	else if (movementComp->getState(MOVING_UP)) {
 		
 		sprite->setScale(1, 1);
 		animationComponent->play("WALK_UP", dt, -movementComp->getVelocity().y, movementComp->getMaxVelocity());
-	
 	}
 	else if (movementComp->getState(MOVING_DOWN)) {
 	
 		sprite->setScale(1, 1);
 		animationComponent->play("WALK_DOWN", dt, movementComp->getVelocity().y, movementComp->getMaxVelocity());
-
 	}
 
 }
@@ -92,15 +84,13 @@ void Player::updateAnimation(const float& dt)
 
 void Player::update(const float& dt, sf::Vector2f mousePosView)
 {
-	updateSounds();
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::E))
 		attributeComponent->gainExp(20);
 	movementComp->update(dt);
 
 	updateAnimation(dt);
 	hitbox->update();
-	weapon->update(mousePosView, getCenter());
-
+	sword->update(mousePosView, getCenter());
 	
 }
 
@@ -111,11 +101,11 @@ void Player::render(sf::RenderTarget* target, sf::Shader* shader, const bool sho
 		shader->setUniform("hasTexture", true);
 		shader->setUniform("lightPos", light_position);
 		target->draw(*sprite, shader);
-		weapon->render(*target, shader);
+		sword->render(*target, shader);
 	}
 	else {
 		target->draw(*sprite);
-		weapon->render(*target);
+		sword->render(*target);
 	}
 	
 	if (show_hitbox) {
@@ -161,92 +151,17 @@ const bool Player::showHitbox() const
 
 Weapon* Player::getWeapon() const 
 {
-	return weapon;
+	return sword;
 }
 
 const std::string Player::CharacterTabString() const
 {
 	std::stringstream ss;
 	if (this ) {
+		std::cout << "setting string" << std::endl;
 		ss << "Level: " << attributeComponent->level << std::endl;
 		ss << "Experience: " << attributeComponent->exp << std::endl;
 		ss << "Experience required: " << attributeComponent->expNext << std::endl;
-		ss << "Weapon level: " << weapon->getLevel() << std::endl;
-		ss << "Weapon type: " << weapon->getType() << std::endl;
-		ss << "Weapon value: " << weapon->getValue() << std::endl;
-		ss << "Weapon Range: " << weapon->getRange() << std::endl;
-		
 	}
 	return ss.str();
-}
-
-const bool& Player::getInitAttack()
-{
-	return initAttack;
-}
-
-void Player::setinitAttack(const bool set)
-{
-	initAttack = set;
-}
-
-const bool Player::getDamageTimer()
-{
-	if(damageTimer.getElapsedTime().asMilliseconds() >= damageTimerMax) {
-		damageTimer.restart();
-		return true;
-	}
-	return false;
-}
-
-const unsigned Player::getDamage()
-{
-	return (rand() % ((attributeComponent->damageMax + weapon->getDamageMax()) - (attributeComponent->damageMin + weapon->getDamageMin()) + 1) + (attributeComponent->damageMin+ weapon->getDamageMin()))/10;
-}
-
-void Player::initSounds()
-{
-
-	if (!walkBuffer.loadFromFile("Resources/Sounds/walk.wav")) {
-		std::cout << "ERROR::initSounds::walk" << std::endl;
-	}
-	if (!swingBuffer.loadFromFile("Resources/Sounds/swing.wav")) {
-		std::cout << "ERROR::initSounds::swing" << std::endl;
-	}
-
-	walk.setBuffer(walkBuffer);
-	swing.setBuffer(swingBuffer);
-	
-}
-
-void Player::updateSounds()
-{
-	bool moving{ false };
-	if (movementComp->getState(IDLE)) {
-		
-
-	}
-	else if (movementComp->getState(MOVING_LEFT)) {
-
-		moving = true;
-
-	}
-	else if (movementComp->getState(MOVING_RIGHT)) {
-
-		moving = true;
-
-	}
-	else if (movementComp->getState(MOVING_UP)) {
-		moving = true;
-
-	}
-	else if (movementComp->getState(MOVING_DOWN)) {
-
-		moving = true;
-	}
-
-	if (moving) {
-		walk.setBuffer(walkBuffer);
-		walk.play();
-	}
 }

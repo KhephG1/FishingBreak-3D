@@ -9,21 +9,13 @@ private:
 	bool facing_right;
 	bool attacking;
 	bool show_hitbox;
-	Weapon* weapon;
-	bool initAttack;
+	Sword* sword;
 	Inventory* inventory;
 	void initVariables();
 	void initComponents();
 	void initAnimations();
 	void initInventory();
-	sf::Int32 damageTimerMax;
-	sf::Clock damageTimer;
-	sf::SoundBuffer walkBuffer;
-	sf::Sound walk;
-	sf::SoundBuffer swingBuffer;
-	sf::Sound swing;
 public:
-	bool dead{ false };
 	Player(float xpos, float ypos, sf::Texture* tex_sheet);
 	virtual ~Player();
 	AttributeComponent* getAttributeComponent();
@@ -40,11 +32,5 @@ public:
 	const bool showHitbox() const;
 	 Weapon* getWeapon()const;
 	 const std::string CharacterTabString()const;
-	 const bool& getInitAttack();
-	 void setinitAttack(const bool set);
-	 const bool getDamageTimer();
-	 const unsigned getDamage();
-	 void initSounds();
-	 void updateSounds();
 };
 #endif

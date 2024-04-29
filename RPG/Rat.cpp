@@ -7,9 +7,9 @@ Rat::Rat(float xpos, float ypos, sf::Texture* tex_sheet,EnemySpawnerTile& spawne
 	
 	createSprite(tex_sheet);
 	sprite->setScale(1, 1);
-	createMovementComponent(20.f, 400.f, 200.f);
+	createMovementComponent(100.f, 1500.f, 900.f);
 	createAnimationtComponent(*tex_sheet);
-	createHitboxComponent(*sprite, 10.f,15.f, 44.f, 44.f);
+	createHitboxComponent(*sprite, 10.f, 5.f, 44.f, 54.f);
 	createAttributeComponent(1);
 	generateAttributes(attributeComponent->level);
 	initAnimations();
@@ -34,8 +34,8 @@ void Rat::initAnimations()
 	animationComponent->addAnimation("IDLE", 12.f, 0, 0, 3, 0, 60, 64);
 	animationComponent->addAnimation("WALK_DOWN", 11.f, 0, 1, 3, 1, 60, 64);
 	animationComponent->addAnimation("WALK_UP", 11.f, 0, 4, 3, 4, 60, 64);
-	animationComponent->addAnimation("WALK_LEFT", 11.f, 0, 2, 3, 2, 60, 64);
-	animationComponent->addAnimation("WALK_RIGHT", 5.f, 0, 3, 3, 3, 60, 64);
+	animationComponent->addAnimation("WALK_LEFT", 11.f, 0, 3, 3, 3, 60, 64);
+	animationComponent->addAnimation("WALK_RIGHT", 5.f, 0, 2, 3, 2, 60, 64);
 	animationComponent->addAnimation("ATTACK", 5.f, 0, 2, 1, 2, 60, 64);
 
 }
@@ -80,12 +80,7 @@ void  Rat::updateAnimation(const float& dt)
 		sprite->setScale(1, 1);
 		animationComponent->play("WALK_DOWN", dt, movementComp->getVelocity().y, movementComp->getMaxVelocity());
 	}
-	if (damageTimer.getElapsedTime().asMilliseconds() <= damageTimerMax) {
-		sprite->setColor(sf::Color::Red);
-	}
-	else {
-		sprite->setColor(sf::Color::White);
-	}
+
 }
 
 void  Rat::update(const float& dt, sf::Vector2f mousePosView)

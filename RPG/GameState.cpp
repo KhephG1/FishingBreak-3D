@@ -10,7 +10,7 @@ void GameState::initDifferedRender()
 
 void GameState::initView()
 {
-	MainView.setSize(sf::Vector2f{ (float)State_Data->gfxSettings->resolution.width/2, (float)State_Data->gfxSettings->resolution.height/2 });
+	MainView.setSize(sf::Vector2f{ (float)State_Data->gfxSettings->resolution.width, (float)State_Data->gfxSettings->resolution.height });
 	MainView.setCenter(sf::Vector2f{ State_Data->gfxSettings->resolution.width / 2.f, State_Data->gfxSettings->resolution.height / 2.f });
 }
 
@@ -24,9 +24,6 @@ void GameState::initTextures()
 	textures["PLAYER_SHEET"] = temp;
 
 	if (!textures["RAT1_SHEET"].loadFromFile("Resources/Images/Enemy/rat1_60x64.png")) {
-		throw std::runtime_error{ "ERROR::GAME_STATE::COULD_NOT_LOAD_RAT1_TEXTURE" };
-	}
-	if (!textures["BIRD1_SHEET"].loadFromFile("Resources/Images/Enemy/bird1_61x57.png")) {
 		throw std::runtime_error{ "ERROR::GAME_STATE::COULD_NOT_LOAD_RAT1_TEXTURE" };
 	}
 }
@@ -154,7 +151,7 @@ void GameState::render(sf::RenderTarget* target)
 		player->render(&render_tex, &core_shader, false, player->getCenter());
 	}
 	for (auto* i : activeEnemies) {
-			i->render(&render_tex, &core_shader, true, player->getCenter());
+		i->render(&render_tex, &core_shader, true, player->getCenter());
 	}
 	tMap->DeferredRender(render_tex,player->getCenter(),&core_shader);
 	tts->render(&render_tex);
@@ -253,8 +250,8 @@ void GameState::updateView(const float& dt)
 	//instead of moving the camera manually like in editor state, we set the camera to always follow the player
 	//to avoid "tearing" which results from moving the camera using floating point values, we can use the floor function to reduce
 	if (!playerGUI->getTabsOpen()) {
-		MainView.setCenter(std::floor(player->getPosition().x + (float)(mousePosWindow.x - (float)State_Data->gfxSettings->resolution.width / 4.f) / 2.f),
-			std::floor(player->getPosition().y + (float)(mousePosWindow.y - (float)State_Data->gfxSettings->resolution.height/4.f)/2.f));
+		MainView.setCenter(std::floor(player->getPosition().x + (float)(mousePosWindow.x - (float)State_Data->gfxSettings->resolution.width / 2.f) / 2.f),
+			std::floor(player->getPosition().y + (float)(mousePosWindow.y - (float)State_Data->gfxSettings->resolution.height / 2.f)));
 		if (tMap->getMaxSizeFloat().x >= MainView.getSize().x)
 		{
 			if (MainView.getCenter().x - MainView.getSize().x / 2.f < 0.f)
@@ -289,7 +286,7 @@ void GameState::updatePlayerGUI(const float& dt)
 	playerGUI->update(dt);
 	if (player->getPosition().x < 0 || player->getPosition().y < 0) {
 
-		
+		std::cout << "setting position GUI" << std::endl;
 		player->setPosition(400, 400);
 	}
 
@@ -308,9 +305,6 @@ void GameState::updatePlayer(const float& dt)
 
 void GameState::updateEnemies(const float& dt)
 {
-	if(sf::Mouse::isButtonPressed(sf::Mouse::Left)&& player->getWeapon()->getattackTimer()){
-		player->setinitAttack(true);
-	}
 	int index = 0;
 	for (auto* enemy : activeEnemies) {
 		enemy->update(dt, mousePosView);
@@ -319,34 +313,26 @@ void GameState::updateEnemies(const float& dt)
 		updateCombat(enemy,index, dt);
 		if (enemy->dead()) {
 			player->gainXP(enemy->getGainExp());
-			player->gainHP(enemy->getAttributeComponent()->hpMax / 2);
 			tts->createTextTagString(EXPERIENCE, player->getCenter().x, player->getCenter().y,(int)enemy->getGainExp(),"+","XP");
 			enemySystem->removeEnemy(index);
 			--index;
 		}
 		++index;
 	}
-	player->setinitAttack(false);
 
 }
 
 void GameState::updateCombat(Enemy* enemy, const int index, const float& dt)
 {
 
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && enemy->getGlobalBounds().contains(mousePosView)&&player->getDistance(enemy) < player->getWeapon()->getRange()&&player->getInitAttack()&&enemy->getDamageTimerDone()) {
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && enemy->getGlobalBounds().contains(mousePosView)&&player->getDistance(enemy) < player->getWeapon()->getRange()) {
 		
-			tts->createTextTagString(NEGATIVE, player->getCenter().x, player->getCenter().y, (int)player->getDamage(), "-", "HP");
-			enemy->damage(player->getDamage());
-			enemy->resetDamageTimer();
+		if (player->getWeapon()->getattackTimer()) {
+			tts->createTextTagString(NEGATIVE, player->getCenter().x, player->getCenter().y, (int)player->getWeapon()->getDamageDynamic(),"-","HP");
+			enemy->damage(player->getWeapon()->getDamageDynamic());
 			
-	}
-	if (enemy->getGlobalBounds().intersects(player->getGlobalBounds())&&player->getDamageTimer()) {
-		int dmg = enemy->getAttributeComponent()->damageMax;
-		player->loseHP(dmg);
-		tts->createTextTagString(TagTypes::DEFAULT_TYPE, enemy->getPosition().x, enemy->getPosition().y, dmg, "-", "HP");
-	}
-	if (player->getAttributeComponent()->hp <= 0) {
-		quit = true;
+		}
+			
 	}
 	
 }

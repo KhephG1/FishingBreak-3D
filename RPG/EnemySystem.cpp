@@ -18,10 +18,6 @@ void EnemySystem::createEnemy(const short type, const float xPos, const float yP
 		activeEnemies.push_back(new Rat(xPos, yPos, &textures["RAT1_SHEET"], spawnerTile,player));
 		spawnerTile.increaseEnemyCounter();
 		break;
-	case EnemyTypes::BIRD:
-		this->activeEnemies.push_back(new Bird1(xPos, yPos, this->textures["BIRD1_SHEET"], spawnerTile, this->player));
-		spawnerTile.increaseEnemyCounter();
-		break;
 	default:
 		std::cout << "createEnemy::ERROR CREATING ENEMY " << std::endl;
 		break;

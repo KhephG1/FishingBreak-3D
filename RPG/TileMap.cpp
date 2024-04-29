@@ -118,12 +118,11 @@ void TileMap::render(sf::RenderTarget& target, const sf::Vector2i gridPosition, 
 						collision_box.setPosition(tMap.at(x).at(y).at(layer).at(k)->getPosition());
 						target.draw(collision_box);
 					}
-					if (tMap.at(x).at(y).at(layer).at(k)->getType() == TileTypes::ENEMYSPAWNER) {
-						collision_box.setPosition(tMap.at(x).at(y).at(layer).at(k)->getPosition());
-						target.draw(collision_box);
-					}
 				}
-				
+				if (tMap.at(x).at(y).at(layer).at(k)->getType() == TileTypes::ENEMYSPAWNER) {
+					collision_box.setPosition(tMap.at(x).at(y).at(layer).at(k)->getPosition());
+					target.draw(collision_box);
+				}
 			}
 		}
 	}
@@ -153,7 +152,6 @@ void TileMap::addTile(const int x, const int y, const int z, const sf::IntRect t
 
 void TileMap::addTile(const int x, const int y, const int z, const sf::IntRect texture_rect, const int enemy_type, const int enemy_count, const int spawnTimer, const int enemy_max_dist) {
 	if (x < maxSizeGrid.x && y < maxSizeGrid.y && z < layers && x >= 0 && y >= 0 && z >= 0) {
-		std::cout << enemy_type << std::endl;
 			tMap.at(x).at(y).at(z).push_back(new EnemySpawnerTile(x, y, gridSizeF, tileSheet, texture_rect,enemy_type,enemy_count,spawnTimer,enemy_max_dist));
 	}
 
@@ -289,6 +287,7 @@ void TileMap::loadFromFile(const std::string file_name)
 		//Load all tiles
 		while (in_file >> x >> y >> z >> type)
 		{
+			std::cout << type << std::endl;
 			if (type == TileTypes::ENEMYSPAWNER)
 			{
 				//amount, time, max dist
@@ -298,6 +297,7 @@ void TileMap::loadFromFile(const std::string file_name)
 				int	enemy_md = 0;
 
 				in_file >> trX >> trY >> enemy_type >> enemy_am >> enemy_tts >> enemy_md;
+
 				tMap[x][y][z].push_back(
 					new EnemySpawnerTile(
 						x, y,
@@ -500,7 +500,7 @@ void TileMap::updateTiles(Entity* entity, const float& dt,EnemySystem& enemy_sys
 						//this if statement ensures enemies are spawned one at a time
 						if (!es->getSpawned()&& es->getEnemyCounter() < es->getEnemyAmount()) {
 							//pass position to create enenmy as  ypos,xpos!!!
-							enemy_system.createEnemy(es->getEnemytype(), y * gridSizeF, x * gridSizeF, *es);
+							enemy_system.createEnemy(RAT,y * gridSizeF,x*gridSizeF, *es );
 							es->SetSpawned(true);
 							
 						}

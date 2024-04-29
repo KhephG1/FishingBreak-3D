@@ -15,7 +15,6 @@ public:
 	std::stack<State*>* states;
 	GraphicSettings* gfxSettings;
 	float gridsize;
-	float endGame{ false };
 };
 class State
 {
