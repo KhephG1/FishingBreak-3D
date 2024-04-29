@@ -86,7 +86,7 @@ namespace GUI
 
 
 		//Accessors
-		const bool& getActive() const;
+		bool& getActive();
 		const sf::IntRect& getTextureRect() const;
 		bool& gethidden();
 		//Functions

@@ -26,7 +26,7 @@ void main()
 
 	//Length of the vector (distance)
 
-	float vecLength = clamp(length(lightToFrag) * 2, 0, 1);
+	float vecLength = clamp(length(lightToFrag) , 0, 1);
 
 	//lookup pixel in the texture
 

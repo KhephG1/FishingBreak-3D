@@ -20,6 +20,10 @@ public:
 
 	//Functions
 	virtual Item* clone() = 0;
+	//Accessors
+	const short unsigned& getType() const { return type; }
+	const short unsigned& getLevel() const { return level; }
+	const short unsigned& getValue() const { return value; }
 };
 
 #endif

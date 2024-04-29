@@ -30,6 +30,7 @@ public:
 	const bool& getSpawned() const;
 	const int& getEnemyCounter() const;
 	const int& getEnemyAmount() const;
+	const int& getEnemytype() const;
 };
 
 

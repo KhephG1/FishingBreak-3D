@@ -7,10 +7,10 @@ void TextTagSystem::initVariables()
 
 void TextTagSystem::initTagTemplates()
 {
-	tagTemplates[DEFAULT_TYPE] = new TextTag{font, "text", 200,200,sf::Color::White,50,60.f,100.f,0,-1};
-	tagTemplates[EXPERIENCE] = new TextTag{ font,"text",200,200,sf::Color::Cyan,50,60.f,100.f,0,1 };
-	tagTemplates[POSITIVE] = new TextTag{ font,"text",200,200,sf::Color::Green,50,60.f,100.f,0,-1 };
-	tagTemplates[NEGATIVE] = new TextTag{ font,"text",200,200,sf::Color::Red,50,60.f,100.f,0,-1 };
+	tagTemplates[DEFAULT_TYPE] = new TextTag{font, "text", 200,200,sf::Color::White,25,60.f,100.f,0,-1,500.f,10};
+	tagTemplates[EXPERIENCE] = new TextTag{ font,"text",200,200,sf::Color::Cyan,25,60.f,100.f,0,1,500.f,10 };
+	tagTemplates[POSITIVE] = new TextTag{ font,"text",200,200,sf::Color::Green,25,60.f,100.f,0,-1,500.f,10 };
+	tagTemplates[NEGATIVE] = new TextTag{ font,"text",200,200,sf::Color::Red,25,60.f,100.f,0,-1,500.f,10 };
 }
 
 void TextTagSystem::initFonts(std::string font_file)
