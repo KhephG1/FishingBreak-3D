@@ -221,32 +221,5 @@ void Player::initSounds()
 
 void Player::updateSounds()
 {
-	bool moving{ false };
-	if (movementComp->getState(IDLE)) {
-		
 
-	}
-	else if (movementComp->getState(MOVING_LEFT)) {
-
-		moving = true;
-
-	}
-	else if (movementComp->getState(MOVING_RIGHT)) {
-
-		moving = true;
-
-	}
-	else if (movementComp->getState(MOVING_UP)) {
-		moving = true;
-
-	}
-	else if (movementComp->getState(MOVING_DOWN)) {
-
-		moving = true;
-	}
-
-	if (moving) {
-		walk.setBuffer(walkBuffer);
-		walk.play();
-	}
 }
