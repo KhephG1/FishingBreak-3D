@@ -9,5 +9,6 @@ private:
 public:
 	AIcomponent(Entity& entity, Entity& self);
 	virtual ~AIcomponent();
+
 };
 

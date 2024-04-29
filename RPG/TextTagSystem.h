@@ -9,9 +9,10 @@ private:
 
 		float dirY;
 		float dirX;
-		
+		float acceleration;
 		float speed;
-
+		sf::Vector2f velocity;
+		sf::Uint8 fadeValue;
 		
 	public:
 		sf::Text txt;
@@ -25,9 +26,11 @@ private:
 			dirY = tag->dirY;
 			lifeTime = tag->lifeTime;
 			speed = tag->speed;
+			acceleration = tag->acceleration;
+			fadeValue = tag->fadeValue;
 		}
 		TextTag(sf::Font& font, std::string text, float pos_x, float pos_y,
-			sf::Color color, unsigned char_size, float life_t, float spd, float dir_x, float dir_y) {
+			sf::Color color, unsigned char_size, float life_t, float spd, float dir_x, float dir_y, float accel, sf::Uint8 fade_value) {
 			txt.setFont(font);
 			txt.setPosition(pos_x, pos_y);
 			txt.setString(text);
@@ -37,6 +40,8 @@ private:
 			speed = spd;
 			txt.setFillColor(color);
 			txt.setCharacterSize(char_size);
+			acceleration = accel;
+			fadeValue = fade_value;
 		}
 		~TextTag() {
 			
@@ -49,8 +54,22 @@ private:
 		void update(const float& dt) {
 			if (lifeTime > 0.f) {
 				lifeTime -= 100 * dt;
-				txt.move(dirX * speed * dt, dirY * speed * dt);
-
+				if (acceleration > 0.f) {
+					velocity += sf::Vector2f{ dirX,dirY } *acceleration;
+					if (std::abs(velocity.x) > speed) {
+						velocity.x = dirX * speed;
+					}
+					if (std::abs(velocity.y) > speed) {
+						velocity.y = dirY * speed;
+					}
+					txt.move(velocity * dt);
+				}
+				else {
+					txt.move(dirX * speed * dt, dirY * speed * dt);
+				}
+				if (fadeValue > 0 && txt.getFillColor().a >fadeValue) {
+					txt.setFillColor(sf::Color{ txt.getFillColor().r, txt.getFillColor().g, txt.getFillColor().b, (sf::Uint8)(txt.getFillColor().a - fadeValue)});
+				}
 			}
 			
 		}

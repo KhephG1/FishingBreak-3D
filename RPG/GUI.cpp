@@ -242,7 +242,7 @@ GUI::textureSelector::~textureSelector()
 
 }
 
-const bool& GUI::textureSelector::getActive() const
+bool& GUI::textureSelector::getActive()
 {
 	return active;
 }

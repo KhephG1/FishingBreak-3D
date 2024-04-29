@@ -9,7 +9,8 @@ Enemy::~Enemy()
 
 void Enemy::initVariables()
 {
-
+	gainEXP = 10;
+	damageTimerMax = 1000;
 }
 
 void Enemy::initAnimations()
@@ -38,6 +39,10 @@ const AttributeComponent* Enemy::getAttributeComponent()
 	return nullptr;
 }
 
+void Enemy::update(const float& dt, sf::Vector2f mousePosView)
+{
+}
+
 const bool Enemy::dead()
 {
 	if (attributeComponent) {
@@ -47,7 +52,7 @@ const bool Enemy::dead()
 
 void Enemy::generateAttributes(const unsigned lvl)
 {
-	gainEXP = lvl * (rand() % 5 + 1);
+	gainEXP = lvl * (rand() % 50 + 10);
 }
 
 const unsigned& Enemy::getGainExp() const
@@ -58,6 +63,16 @@ const unsigned& Enemy::getGainExp() const
 EnemySpawnerTile& Enemy::getSpawnerTile()
 {
 	return enemySpawnerTile;
+}
+
+void Enemy::resetDamageTimer()
+{
+	damageTimer.restart();
+}
+
+const bool Enemy::getDamageTimerDone() const
+{
+	return damageTimer.getElapsedTime().asMilliseconds() >= damageTimerMax;
 }
 
 

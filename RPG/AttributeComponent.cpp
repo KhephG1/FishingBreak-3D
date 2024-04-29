@@ -15,7 +15,7 @@ AttributeComponent::AttributeComponent(int lvl)
 	
 	
 	*/
-	expNext = static_cast<unsigned>((50/3) * (std::pow(level,3) - 6 * std::pow(level,2) + (level * 22) -12));
+	expNext = (50 * pow(level, 3) - 150 * pow(level, 2) + 400 * level) / 3;
 	AttributePts = 3;
 
 	vitality = 1;
@@ -34,10 +34,10 @@ AttributeComponent::~AttributeComponent()
 
 void AttributeComponent::updateStats(const bool reset)
 {
-	hpMax = vitality * 9 + strength * 2;
+	hpMax = vitality * 11 + strength * 2;
 	//Format: main contributor * multiplying factor : secondary contributor / attributes required to increment : tertiary contributor / larger divisor
-	damageMax = strength * 2 + strength / 2 + intelligence / 5;
-	damageMin = strength * 2 + strength / 4 + intelligence / 5;
+	damageMax = strength * 6 + strength / 2 + intelligence / 5;
+	damageMin = strength *4  + strength / 4 + intelligence / 5;
 	accuracy = dexterity * 5 + dexterity / 3 + intelligence / 5;
 	defense = agility * 2 + agility / 4 + intelligence / 5;
 	luck = intelligence * 2 + intelligence / 5;
@@ -52,7 +52,7 @@ void AttributeComponent::updateLvl()
 	while (exp >= expNext) {
 		++level;
 		exp -= expNext;
-		expNext = static_cast<unsigned>((50 / 3) * (std::pow(level + 1, 3) - 6 * std::pow(level+ 1, 2) + (level * 21) - 12));
+		expNext = (50 * pow(level, 3) - 150 * pow(level, 2) + 400 * level) / 3;
 		++AttributePts;
 	}
 }

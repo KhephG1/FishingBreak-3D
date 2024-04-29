@@ -20,7 +20,7 @@ void MeleeWeapon::generate(const unsigned lvl_max, const unsigned lvl_min)
 	level = rand() % (lvl_max - lvl_min + 1) + lvl_min;
 	damageMin = pow(level * (2), 2);
 	damageMax = pow(level * 3, 2);
-	range = level * rand() % 100 + 500;
+	range = level * rand() % 100 + 70;
 	value = level + damageMin + damageMax + range;
 }
 

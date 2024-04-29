@@ -12,7 +12,7 @@ EnemySpawnerTile::EnemySpawnerTile(int grid_x, int grid_y, float gridSizeF, cons
 	EnemyTimeToSpawn = enemy_time_to_spawn;
 	EnemymaxDistance = enemy_max_Distance;
 	
-
+	std::cout << Enemytype;
 }
 
 EnemySpawnerTile::~EnemySpawnerTile()
@@ -110,5 +110,10 @@ const int& EnemySpawnerTile::getEnemyCounter() const
 const int& EnemySpawnerTile::getEnemyAmount() const
 {
 	return EnemyCount;
+}
+
+const int& EnemySpawnerTile::getEnemytype() const
+{
+	return Enemytype;
 }
 

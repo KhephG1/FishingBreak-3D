@@ -2,7 +2,8 @@
 #define ENEMYSYSTEM_H
 #include "EnemySpawnerTile.h"
 #include "Rat.h"
-enum EnemyTypes {RAT = 0};
+#include "Bird.h"
+enum EnemyTypes {RAT = 0, BIRD};
 class EnemySystem
 {
 private:

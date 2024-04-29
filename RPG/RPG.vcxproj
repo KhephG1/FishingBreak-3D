@@ -147,6 +147,7 @@
     <ClCompile Include="AIFollow.cpp" />
     <ClCompile Include="AnimationComponent.cpp" />
     <ClCompile Include="AttributeComponent.cpp" />
+    <ClCompile Include="Bird.cpp" />
     <ClCompile Include="Bow.cpp" />
     <ClCompile Include="characterTab.cpp" />
     <ClCompile Include="DefaultMode.cpp" />
@@ -196,6 +197,7 @@
     <ClInclude Include="AIFollow.h" />
     <ClInclude Include="AnimationComponent.h" />
     <ClInclude Include="AttributeComponent.h" />
+    <ClInclude Include="Bird.h" />
     <ClInclude Include="Bow.h" />
     <ClInclude Include="characterTab.h" />
     <ClInclude Include="DefaultMode.h" />

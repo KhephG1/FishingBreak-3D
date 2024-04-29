@@ -98,6 +98,9 @@ void DefaultMode::updateGUI(const float& dt)
 	if (!texSelector->getActive()) {
 		selectorRect.setTextureRect(textureRect);
 		selectorRect.setPosition(editorStateData.mousePosGrid->x * stateData->gridsize, editorStateData.mousePosGrid->y * stateData->gridsize);
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::H)) {
+			texSelector->gethidden() = !texSelector->gethidden();
+		}
 	}
 	cursorText.setPosition(editorStateData.mousePosView->x + 100.f, editorStateData.mousePosView->y - 50.f);
 	std::stringstream ss;
@@ -151,13 +154,12 @@ void DefaultMode::initGUI()
 	selectorRect.setOutlineColor(sf::Color::Green);
 	selectorRect.setTexture(tMap->getileSheet());
 	selectorRect.setTextureRect(textureRect);
-	texSelector = new GUI::textureSelector{ 0,0,800.f,500.f,stateData->gridsize, tMap->getileSheet(), *editorStateData.font };
 	sidebar.setSize(sf::Vector2f{ (float)stateData->gfxSettings->resolution.width,80.f });
 	sidebar.setPosition(0, stateData->gfxSettings->resolution.height - sidebar.getSize().y);
 	sidebar.setFillColor(sf::Color{ 50,50,50,100 });
 	sidebar.setOutlineThickness(1.f);
 	texSelector = new GUI::textureSelector{
-		20.f, 20.f, 1000.f, 500.f,
+		20.f, 20.f, 1800.f, 800.f,
 		stateData->gridsize, this->tMap->getileSheet(),
 		*editorStateData.font
 	};
